@@ -9,8 +9,7 @@ impl<'a> System<'a> for UpdatePos {
     fn run(&mut self, (velocity, mut position): Self::SystemData) {
         use specs::Join;
         for (v, p) in (&velocity, &mut position).join() {
-            p.x += v.x;
-            p.y += v.y;
+            p.rect.r#move(v.x, v.y);
         }
     }
 }

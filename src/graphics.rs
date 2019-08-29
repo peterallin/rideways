@@ -46,6 +46,7 @@ impl<'a> Graphics<'a> {
 
 pub struct Renderer<'a> {
     ufo_texture: Texture<'a>,
+    pub ufo_size: (u32, u32),
     canvas: Canvas,
 }
 
@@ -54,11 +55,15 @@ impl<'a> Renderer<'a> {
         let ufo_texture = texture_creator
             .load_texture("ufo.png")
             .expect("Unable to load ufo.png"); // TODO: Any good way to fail a constructor?
+        let ufo_query = ufo_texture.query();
+        let ufo_size = (ufo_query.width, ufo_query.height);
         Renderer {
             canvas,
             ufo_texture,
+            ufo_size,
         }
     }
+
     pub fn render(
         &mut self,
         position: &super::ecs::Position,
@@ -68,8 +73,12 @@ impl<'a> Renderer<'a> {
             super::ecs::RenderKind::UFO => {
                 // TODO: The rect should be in Specs instead of a position
                 let q = self.ufo_texture.query();
-                let dest_rect =
-                    sdl2::rect::Rect::new(position.x as i32, position.y as i32, q.width, q.height);
+                let dest_rect = sdl2::rect::Rect::new(
+                    position.rect.left() as i32,
+                    position.rect.top() as i32,
+                    q.width,
+                    q.height,
+                );
                 self.canvas
                     .copy(&self.ufo_texture, None, dest_rect)
                     .expect("Unable to copy ufo image"); // TODO: Any better way to handle this? At least get the error text out.

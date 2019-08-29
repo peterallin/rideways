@@ -1,6 +1,8 @@
 mod ecs;
 mod graphics;
+mod rect;
 
+use rect::Rect;
 use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {

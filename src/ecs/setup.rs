@@ -3,6 +3,7 @@ use super::render_all_system::RenderAll;
 use super::update_pos_system::UpdatePos;
 use super::{MovementKind, Position, RenderKind, Velocity};
 use crate::graphics::Renderer;
+use crate::rect::Rect;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
@@ -14,9 +15,13 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<MovementKind>();
     world.register::<RenderKind>();
 
+    let ufo_size = (renderer.ufo_size.0 as f32, renderer.ufo_size.1 as f32);
+
     world
         .create_entity()
-        .with(Position { x: 5.0, y: 100.0 })
+        .with(Position {
+            rect: Rect::new((5.0, 100.0), ufo_size),
+        })
         .with(Velocity { x: -3.0, y: 0.0 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)
@@ -24,7 +29,9 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
 
     world
         .create_entity()
-        .with(Position { x: 5.0, y: 300.0 })
+        .with(Position {
+            rect: Rect::new((5.0, 300.0), ufo_size),
+        })
         .with(Velocity { x: 1.0, y: 0.0 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)
@@ -32,7 +39,9 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
 
     world
         .create_entity()
-        .with(Position { x: 100.0, y: 500.0 })
+        .with(Position {
+            rect: Rect::new((100.0, 500.0), ufo_size),
+        })
         .with(Velocity { x: 10.0, y: -0.1 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)

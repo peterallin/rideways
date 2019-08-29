@@ -7,8 +7,8 @@ mod setup;
 mod update_pos_system;
 mod velocity;
 
+use movement_kind::MovementKind;
 pub use position::Position;
 pub use render_kind::RenderKind;
 pub use setup::setup;
-use movement_kind::MovementKind;
 use velocity::Velocity;
