@@ -47,6 +47,8 @@ impl<'a> Graphics<'a> {
 pub struct Renderer<'a> {
     ufo_texture: Texture<'a>,
     pub ufo_size: (u32, u32),
+    player_texture: Texture<'a>,
+    pub player_size: (u32, u32),
     canvas: Canvas,
 }
 
@@ -57,10 +59,19 @@ impl<'a> Renderer<'a> {
             .expect("Unable to load ufo.png"); // TODO: Any good way to fail a constructor?
         let ufo_query = ufo_texture.query();
         let ufo_size = (ufo_query.width, ufo_query.height);
+
+        let player_texture = texture_creator
+            .load_texture("player.png")
+            .expect("Uangle to load player.png");
+        let player_query = player_texture.query();
+        let player_size = (player_query.width, player_query.height);
+
         Renderer {
             canvas,
             ufo_texture,
             ufo_size,
+            player_texture,
+            player_size,
         }
     }
 
@@ -71,16 +82,27 @@ impl<'a> Renderer<'a> {
     ) {
         match render_kind {
             super::ecs::RenderKind::UFO => {
-                let q = self.ufo_texture.query();
                 let dest_rect = sdl2::rect::Rect::new(
                     position.rect.left() as i32,
                     position.rect.top() as i32,
-                    q.width,
-                    q.height,
+                    self.ufo_size.0,
+                    self.ufo_size.1,
                 );
                 self.canvas
                     .copy(&self.ufo_texture, None, dest_rect)
                     .expect("Unable to copy ufo image"); // TODO: Any better way to handle this? At least get the error text out.
+            }
+            super::ecs::RenderKind::Player => {
+                // TODO: This must be doable with less copy-paste
+                let dest_rect = sdl2::rect::Rect::new(
+                    position.rect.left() as i32,
+                    position.rect.top() as i32,
+                    self.player_size.0,
+                    self.player_size.1,
+                );
+                self.canvas
+                    .copy(&self.player_texture, None, dest_rect)
+                    .expect("Unable to copy player image"); // TODO: Any better way to handle this? At least get the error text out.
             }
         }
     }

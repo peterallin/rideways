@@ -1,21 +1,27 @@
+use std::error::Error;
+
+mod control_state;
 mod ecs;
 mod graphics;
 mod rect;
 
+use control_state::ControlState;
 use rect::Rect;
-use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let window = graphics::Graphics::make_window("Rideways", (800, 600));
     let texture_creator = window.canvas.texture_creator();
     let mut graphics = graphics::Graphics::new(window, &texture_creator);
-    let (world, mut dispatcher) = ecs::setup(graphics.renderer);
+    let (mut world, mut dispatcher) = ecs::setup(graphics.renderer);
+    let mut control_state = ControlState::new();
 
     loop {
+        world.insert(control_state);
         let event = graphics.event_pump.poll_event();
         if let Some(event) = event {
-            if let sdl2::event::Event::Quit { .. } = event {
-                break;
+            match event {
+                sdl2::event::Event::Quit { .. } => break,
+                _ => control_state.update(&event),
             }
         }
         dispatcher.dispatch(&world);

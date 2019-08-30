@@ -1,4 +1,5 @@
 use super::non_player_control_system::NonPlayerControl;
+use super::player_control_system::PlayerControl;
 use super::render_all_system::RenderAll;
 use super::update_pos_system::UpdatePos;
 use super::{MovementKind, Position, RenderKind, Velocity};
@@ -16,6 +17,16 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<RenderKind>();
 
     let ufo_size = (renderer.ufo_size.0 as f32, renderer.ufo_size.1 as f32);
+    let player_size = (renderer.player_size.0 as f32, renderer.player_size.1 as f32);
+
+    world
+        .create_entity()
+        .with(Position {
+            rect: Rect::new((0.0, 300.0), player_size),
+        })
+        .with(Velocity { x: 0.0, y: 0.0 })
+        .with(RenderKind::Player)
+        .build();
 
     world
         .create_entity()
@@ -49,7 +60,12 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
 
     let dispatcher = DispatcherBuilder::new()
         .with(NonPlayerControl, "NonPlayerControl", &[])
-        .with(UpdatePos, "UpdatePos", &["NonPlayerControl"])
+        .with(PlayerControl, "PlayerControl", &[])
+        .with(
+            UpdatePos,
+            "UpdatePos",
+            &["NonPlayerControl", "PlayerControl"],
+        )
         .with_thread_local(RenderAll { renderer })
         .build();
 
