@@ -4,6 +4,7 @@ pub struct ControlState {
     pub right: bool,
     pub up: bool,
     pub down: bool,
+    pub fire: bool,
 }
 
 impl ControlState {
@@ -13,6 +14,7 @@ impl ControlState {
             right: false,
             up: false,
             down: false,
+            fire: false,
         }
     }
 
@@ -25,6 +27,7 @@ impl ControlState {
                 sdl2::keyboard::Keycode::A => self.left = false,
                 sdl2::keyboard::Keycode::S => self.down = false,
                 sdl2::keyboard::Keycode::D => self.right = false,
+                sdl2::keyboard::Keycode::Return => self.fire = false,
                 _ => {}
             },
             sdl2::event::Event::KeyDown {
@@ -34,6 +37,7 @@ impl ControlState {
                 sdl2::keyboard::Keycode::A => self.left = true,
                 sdl2::keyboard::Keycode::S => self.down = true,
                 sdl2::keyboard::Keycode::D => self.right = true,
+                sdl2::keyboard::Keycode::Return => self.fire = true,
                 _ => {}
             },
             _ => {}

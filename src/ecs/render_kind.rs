@@ -5,5 +5,6 @@ use specs_derive::Component;
 #[storage(VecStorage)]
 pub enum RenderKind {
     Player,
+    BasicShot,
     UFO,
 }

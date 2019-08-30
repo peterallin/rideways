@@ -1,6 +1,6 @@
 #![allow(dead_code)] // TODO: Remove
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Rect {
     left: f32,
     top: f32,
@@ -13,8 +13,8 @@ impl Rect {
         Rect {
             left,
             top,
-            width: width,
-            height: height,
+            width,
+            height,
         }
     }
 

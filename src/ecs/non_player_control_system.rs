@@ -22,6 +22,7 @@ impl<'a> System<'a> for NonPlayerControl {
         for (kind, pos, vel) in (&kind, &pos, &mut vel).join() {
             match kind {
                 MovementKind::UFO => control_ufo(pos, vel),
+                MovementKind::Bullet => {}
             }
         }
     }

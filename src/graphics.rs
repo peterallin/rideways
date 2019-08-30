@@ -49,6 +49,8 @@ pub struct Renderer<'a> {
     pub ufo_size: (u32, u32),
     player_texture: Texture<'a>,
     pub player_size: (u32, u32),
+    basic_shot_texture: Texture<'a>,
+    pub basic_shot_size: (u32, u32),
     canvas: Canvas,
 }
 
@@ -62,9 +64,15 @@ impl<'a> Renderer<'a> {
 
         let player_texture = texture_creator
             .load_texture("player.png")
-            .expect("Uangle to load player.png");
+            .expect("Unable to load player.png");
         let player_query = player_texture.query();
         let player_size = (player_query.width, player_query.height);
+
+        let basic_shot_texture = texture_creator
+            .load_texture("basic_shot.png")
+            .expect("Unable to load basic_shot.png");
+        let basic_shot_query = basic_shot_texture.query();
+        let basic_shot_size = (basic_shot_query.width, basic_shot_query.height);
 
         Renderer {
             canvas,
@@ -72,6 +80,8 @@ impl<'a> Renderer<'a> {
             ufo_size,
             player_texture,
             player_size,
+            basic_shot_texture,
+            basic_shot_size,
         }
     }
 
@@ -103,6 +113,18 @@ impl<'a> Renderer<'a> {
                 self.canvas
                     .copy(&self.player_texture, None, dest_rect)
                     .expect("Unable to copy player image"); // TODO: Any better way to handle this? At least get the error text out.
+            }
+            super::ecs::RenderKind::BasicShot => {
+                // TODO: This must be doable with less copy-paste
+                let dest_rect = sdl2::rect::Rect::new(
+                    position.rect.left() as i32,
+                    position.rect.top() as i32,
+                    self.basic_shot_size.0,
+                    self.basic_shot_size.1,
+                );
+                self.canvas
+                    .copy(&self.basic_shot_texture, None, dest_rect)
+                    .expect("Unable to copy basic shot image"); // TODO: Any better way to handle this? At least get the error text out.
             }
         }
     }
