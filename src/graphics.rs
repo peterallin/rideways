@@ -71,7 +71,6 @@ impl<'a> Renderer<'a> {
     ) {
         match render_kind {
             super::ecs::RenderKind::UFO => {
-                // TODO: The rect should be in Specs instead of a position
                 let q = self.ufo_texture.query();
                 let dest_rect = sdl2::rect::Rect::new(
                     position.rect.left() as i32,
