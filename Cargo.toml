@@ -1,7 +1,7 @@
 [package]
 name = "rideways"
 version = "0.1.0"
-authors = ["pal"]
+authors = ["Peter Allin <peter@peca.dk>"]
 edition = "2018"
 
 [dependencies]
