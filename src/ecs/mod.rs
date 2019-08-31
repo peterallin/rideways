@@ -1,6 +1,7 @@
 mod movement_kind;
 mod non_player_control_system;
 mod player_control_system;
+mod player_shooting_system;
 mod position;
 mod render_all_system;
 mod render_kind;
