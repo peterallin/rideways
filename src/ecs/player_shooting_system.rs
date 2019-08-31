@@ -4,7 +4,9 @@ use crate::rect::Rect;
 use crate::ControlState;
 use specs::{Entities, Read, System, WriteStorage};
 
-pub struct PlayerShooting;
+pub struct PlayerShooting {
+    pub shot_size: (u32, u32),
+}
 
 impl<'a> System<'a> for PlayerShooting {
     type SystemData = (
@@ -33,7 +35,10 @@ impl<'a> System<'a> for PlayerShooting {
                 .build_entity()
                 .with(
                     Position {
-                        rect: Rect::new((pos.rect.left(), pos.rect.top()), (32.0, 32.0)), // TODO: Not left, top but mid-right, do not hardcode 32, 32
+                        rect: Rect::new(
+                            (pos.rect.left(), pos.rect.top()),
+                            (self.shot_size.0 as f32, self.shot_size.1 as f32),
+                        ), // TODO: Not left, top but mid-right
                     },
                     &mut position,
                 )

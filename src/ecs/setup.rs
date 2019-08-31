@@ -62,7 +62,13 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     let dispatcher = DispatcherBuilder::new()
         .with(NonPlayerControl, "NonPlayerControl", &[])
         .with(PlayerControl, "PlayerControl", &[])
-        .with(PlayerShooting, "PlayerShooting", &[])
+        .with(
+            PlayerShooting {
+                shot_size: renderer.basic_shot_size,
+            },
+            "PlayerShooting",
+            &[],
+        )
         .with(
             UpdatePos,
             "UpdatePos",
