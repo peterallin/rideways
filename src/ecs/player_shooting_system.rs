@@ -36,9 +36,9 @@ impl<'a> System<'a> for PlayerShooting {
                 .with(
                     Position {
                         rect: Rect::new(
-                            (pos.rect.left(), pos.rect.top()),
+                            pos.rect.midright(),
                             (self.shot_size.0 as f32, self.shot_size.1 as f32),
-                        ), // TODO: Not left, top but mid-right
+                        ),
                     },
                     &mut position,
                 )

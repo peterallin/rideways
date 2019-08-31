@@ -42,6 +42,22 @@ impl Rect {
         self.left + self.width
     }
 
+    pub fn midtop(&self) -> (f32, f32) {
+        (self.left + self.width / 2.0, self.top)
+    }
+
+    pub fn midbottom(&self) -> (f32, f32) {
+        (self.left + self.width / 2.0, self.top + self.height)
+    }
+
+    pub fn midright(&self) -> (f32, f32) {
+        (self.left + self.width, self.top + self.height / 2.0)
+    }
+
+    pub fn midleft(&self) -> (f32, f32) {
+        (self.left, self.top + self.height / 2.0)
+    }
+
     pub fn r#move(&mut self, dx: f32, dy: f32) {
         self.left += dx;
         self.top += dy;
@@ -66,5 +82,14 @@ mod tests {
         let rect = Rect::new((100.0, 200.0), (20.0, 50.0));
         assert_eq!(rect.right(), 120.0);
         assert_eq!(rect.bottom(), 250.0);
+    }
+
+    #[test]
+    fn test_middle_functions() {
+        let rect = Rect::new((100.0, 200.0), (20.0, 50.0));
+        assert_eq!(rect.midleft(), (100.0, 225.0));
+        assert_eq!(rect.midright(), (120.0, 225.0));
+        assert_eq!(rect.midtop(), (110.0, 200.0));
+        assert_eq!(rect.midbottom(), (110.0, 250.0));
     }
 }
