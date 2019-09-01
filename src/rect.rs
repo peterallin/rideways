@@ -1,6 +1,6 @@
 #![allow(dead_code)] // TODO: Remove
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, Default)]
 pub struct Rect {
     left: f32,
     top: f32,
@@ -61,6 +61,16 @@ impl Rect {
     pub fn r#move(&mut self, dx: f32, dy: f32) {
         self.left += dx;
         self.top += dy;
+    }
+
+    pub fn overlaps(&self, other: &Rect) -> bool {
+        if self.left() > other.right() || other.left() > self.right() {
+            false
+        } else if self.top() > other.bottom() || other.top() > self.bottom() {
+            false
+        } else {
+            true
+        }
     }
 }
 

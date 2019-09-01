@@ -1,9 +1,10 @@
 use super::non_player_control_system::NonPlayerControl;
 use super::player_control_system::PlayerControl;
 use super::player_shooting_system::PlayerShooting;
+use super::reap_outsiders_system::ReapOutsiders;
 use super::render_all_system::RenderAll;
 use super::update_pos_system::UpdatePos;
-use super::{MovementKind, Position, RenderKind, Velocity};
+use super::{MovementKind, Position, ReapWhenOutside, RenderKind, Velocity};
 use crate::graphics::Renderer;
 use crate::rect::Rect;
 use specs::world::WorldExt;
@@ -16,6 +17,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<Velocity>();
     world.register::<MovementKind>();
     world.register::<RenderKind>();
+    world.register::<ReapWhenOutside>();
 
     let ufo_size = (renderer.ufo_size().0 as f32, renderer.ufo_size().1 as f32);
     let player_size = (
@@ -77,6 +79,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
             "UpdatePos",
             &["NonPlayerControl", "PlayerControl"],
         )
+        .with(ReapOutsiders, "ReapOutsiders", &["UpdatePos"])
         .with_thread_local(RenderAll { renderer })
         .build();
 
