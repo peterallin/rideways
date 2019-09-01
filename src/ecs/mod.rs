@@ -1,3 +1,5 @@
+mod force_inside_system;
+mod keep_inside;
 mod movement_kind;
 mod non_player_control_system;
 mod player_control_system;
@@ -11,6 +13,7 @@ mod setup;
 mod update_pos_system;
 mod velocity;
 
+use keep_inside::KeepInside;
 use movement_kind::MovementKind;
 pub use position::Position;
 use reap_when_outside::ReapWhenOutside;

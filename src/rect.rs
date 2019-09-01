@@ -18,6 +18,22 @@ impl Rect {
         }
     }
 
+    pub fn set_left(&mut self, new_left: f32) {
+        self.left = new_left;
+    }
+
+    pub fn set_top(&mut self, new_top: f32) {
+        self.top = new_top;
+    }
+
+    pub fn set_right(&mut self, new_right: f32) {
+        self.left = new_right - self.width();
+    }
+
+    pub fn set_bottom(&mut self, new_bottom: f32) {
+        self.top = new_bottom - self.height();
+    }
+
     pub fn left(&self) -> f32 {
         self.left
     }
