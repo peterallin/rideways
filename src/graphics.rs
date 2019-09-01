@@ -1,10 +1,15 @@
+use std::collections::btree_map::BTreeMap;
+
 use sdl2::image::LoadTexture;
 use sdl2::pixels::Color;
 use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
+use crate::ecs::RenderKind;
+
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
+type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;
 
 pub struct Window {
     pub canvas: Canvas,
@@ -45,44 +50,32 @@ impl<'a> Graphics<'a> {
 }
 
 pub struct Renderer<'a> {
-    ufo_texture: Texture<'a>,
-    pub ufo_size: (u32, u32),
-    player_texture: Texture<'a>,
-    pub player_size: (u32, u32),
-    basic_shot_texture: Texture<'a>,
-    pub basic_shot_size: (u32, u32),
+    map: Map<'a>,
     canvas: Canvas,
 }
 
 impl<'a> Renderer<'a> {
     pub fn new(canvas: Canvas, texture_creator: &'a TextureCreator<WindowContext>) -> Renderer<'a> {
-        let ufo_texture = texture_creator
-            .load_texture("ufo.png")
-            .expect("Unable to load ufo.png"); // TODO: Any good way to fail a constructor?
-        let ufo_query = ufo_texture.query();
-        let ufo_size = (ufo_query.width, ufo_query.height);
+        let map = Map::new();
+        let mut renderer = Renderer { map, canvas };
+        renderer.load_texture(RenderKind::UFO, "ufo.png", texture_creator);
+        renderer.load_texture(RenderKind::Player, "player.png", texture_creator);
+        renderer.load_texture(RenderKind::BasicShot, "basic_shot.png", texture_creator);
+        renderer
+    }
 
-        let player_texture = texture_creator
-            .load_texture("player.png")
-            .expect("Unable to load player.png");
-        let player_query = player_texture.query();
-        let player_size = (player_query.width, player_query.height);
-
-        let basic_shot_texture = texture_creator
-            .load_texture("basic_shot.png")
-            .expect("Unable to load basic_shot.png");
-        let basic_shot_query = basic_shot_texture.query();
-        let basic_shot_size = (basic_shot_query.width, basic_shot_query.height);
-
-        Renderer {
-            canvas,
-            ufo_texture,
-            ufo_size,
-            player_texture,
-            player_size,
-            basic_shot_texture,
-            basic_shot_size,
-        }
+    fn load_texture(
+        &mut self,
+        kind: RenderKind,
+        filename: &str,
+        texture_creator: &'a TextureCreator<WindowContext>,
+    ) {
+        let texture = texture_creator
+            .load_texture(filename)
+            .expect("Failed to load texture"); // TODO: Improve error message, include the filename
+        let query = texture.query();
+        let size = (query.width, query.height);
+        self.map.insert(kind, (texture, size));
     }
 
     pub fn render(
@@ -90,43 +83,20 @@ impl<'a> Renderer<'a> {
         position: &super::ecs::Position,
         render_kind: &super::ecs::RenderKind,
     ) {
-        match render_kind {
-            super::ecs::RenderKind::UFO => {
-                let dest_rect = sdl2::rect::Rect::new(
-                    position.rect.left() as i32,
-                    position.rect.top() as i32,
-                    self.ufo_size.0,
-                    self.ufo_size.1,
-                );
-                self.canvas
-                    .copy(&self.ufo_texture, None, dest_rect)
-                    .expect("Unable to copy ufo image"); // TODO: Any better way to handle this? At least get the error text out.
-            }
-            super::ecs::RenderKind::Player => {
-                // TODO: This must be doable with less copy-paste
-                let dest_rect = sdl2::rect::Rect::new(
-                    position.rect.left() as i32,
-                    position.rect.top() as i32,
-                    self.player_size.0,
-                    self.player_size.1,
-                );
-                self.canvas
-                    .copy(&self.player_texture, None, dest_rect)
-                    .expect("Unable to copy player image"); // TODO: Any better way to handle this? At least get the error text out.
-            }
-            super::ecs::RenderKind::BasicShot => {
-                // TODO: This must be doable with less copy-paste
-                let dest_rect = sdl2::rect::Rect::new(
-                    position.rect.left() as i32,
-                    position.rect.top() as i32,
-                    self.basic_shot_size.0,
-                    self.basic_shot_size.1,
-                );
-                self.canvas
-                    .copy(&self.basic_shot_texture, None, dest_rect)
-                    .expect("Unable to copy basic shot image"); // TODO: Any better way to handle this? At least get the error text out.
-            }
-        }
+        let render_info = self
+            .map
+            .get(render_kind)
+            .expect("Failed to get render info"); // TODO: Improve error message, include render kind
+        let render_size = render_info.1;
+        let dest_rect = sdl2::rect::Rect::new(
+            position.rect.left() as i32,
+            position.rect.top() as i32,
+            render_size.0,
+            render_size.1,
+        );
+        self.canvas
+            .copy(&render_info.0, None, dest_rect)
+            .expect("Unable to copy ufo image"); // TODO: Improve error message, include render kind
     }
 
     pub fn clear(&mut self) {
@@ -136,5 +106,20 @@ impl<'a> Renderer<'a> {
 
     pub fn present(&mut self) {
         self.canvas.present();
+    }
+
+    pub fn ufo_size(&self) -> (u32, u32) {
+        self.map.get(&RenderKind::UFO).expect("No UFO").1
+    }
+
+    pub fn player_size(&self) -> (u32, u32) {
+        self.map.get(&RenderKind::Player).expect("No player").1
+    }
+
+    pub fn basic_shot_size(&self) -> (u32, u32) {
+        self.map
+            .get(&RenderKind::BasicShot)
+            .expect("No basic shot")
+            .1
     }
 }

@@ -17,8 +17,11 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<MovementKind>();
     world.register::<RenderKind>();
 
-    let ufo_size = (renderer.ufo_size.0 as f32, renderer.ufo_size.1 as f32);
-    let player_size = (renderer.player_size.0 as f32, renderer.player_size.1 as f32);
+    let ufo_size = (renderer.ufo_size().0 as f32, renderer.ufo_size().1 as f32);
+    let player_size = (
+        renderer.player_size().0 as f32,
+        renderer.player_size().1 as f32,
+    );
 
     world
         .create_entity()
@@ -64,7 +67,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(PlayerControl, "PlayerControl", &[])
         .with(
             PlayerShooting {
-                shot_size: renderer.basic_shot_size,
+                shot_size: renderer.basic_shot_size(),
             },
             "PlayerShooting",
             &[],
