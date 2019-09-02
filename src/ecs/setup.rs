@@ -1,3 +1,4 @@
+use super::collision_checker_system::CollisionChecker;
 use super::force_inside_system::ForceInside;
 use super::non_player_control_system::NonPlayerControl;
 use super::player_control_system::PlayerControl;
@@ -5,7 +6,10 @@ use super::player_shooting_system::PlayerShooting;
 use super::reap_outsiders_system::ReapOutsiders;
 use super::render_all_system::RenderAll;
 use super::update_pos_system::UpdatePos;
-use super::{KeepInside, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity};
+
+use super::{
+    HarmsAliens, IsAlien, KeepInside, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+};
 use crate::graphics::Renderer;
 use crate::rect::Rect;
 use specs::world::WorldExt;
@@ -20,6 +24,8 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<RenderKind>();
     world.register::<ReapWhenOutside>();
     world.register::<KeepInside>();
+    world.register::<IsAlien>();
+    world.register::<HarmsAliens>();
 
     let ufo_size = (renderer.ufo_size().0 as f32, renderer.ufo_size().1 as f32);
     let player_size = (
@@ -45,6 +51,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(Velocity { x: -3.0, y: 0.0 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)
+        .with(IsAlien)
         .build();
 
     world
@@ -55,6 +62,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(Velocity { x: 1.0, y: 0.0 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)
+        .with(IsAlien)
         .build();
 
     world
@@ -65,6 +73,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(Velocity { x: 10.0, y: -0.1 })
         .with(MovementKind::UFO)
         .with(RenderKind::UFO)
+        .with(IsAlien)
         .build();
 
     let dispatcher = DispatcherBuilder::new()
@@ -84,6 +93,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         )
         .with(ReapOutsiders, "ReapOutsiders", &["UpdatePos"])
         .with(ForceInside, "ForceInside", &["UpdatePos"])
+        .with(CollisionChecker, "CollisionChecker", &["ForceInside"])
         .with_thread_local(RenderAll { renderer })
         .build();
 

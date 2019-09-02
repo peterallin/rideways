@@ -1,5 +1,5 @@
 use crate::ecs::render_kind::RenderKind;
-use crate::ecs::{MovementKind, Position, ReapWhenOutside, Velocity};
+use crate::ecs::{HarmsAliens, MovementKind, Position, ReapWhenOutside, Velocity};
 use crate::rect::Rect;
 use crate::ControlState;
 use specs::{Entities, Read, System, WriteStorage};
@@ -17,6 +17,7 @@ impl<'a> System<'a> for PlayerShooting {
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, RenderKind>,
         WriteStorage<'a, ReapWhenOutside>,
+        WriteStorage<'a, HarmsAliens>,
     );
 
     fn run(
@@ -29,6 +30,7 @@ impl<'a> System<'a> for PlayerShooting {
             mut velocity,
             mut render_kind,
             mut reap_when_outside,
+            mut harms_aliens,
         ): Self::SystemData,
     ) {
         use specs::Join;
@@ -55,6 +57,7 @@ impl<'a> System<'a> for PlayerShooting {
                 .with(RenderKind::BasicShot, &mut render_kind)
                 .with(MovementKind::Bullet, &mut movement_kind)
                 .with(ReapWhenOutside, &mut reap_when_outside)
+                .with(HarmsAliens, &mut harms_aliens)
                 .build();
         }
     }

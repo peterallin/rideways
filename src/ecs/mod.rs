@@ -1,4 +1,7 @@
+mod collision_checker_system;
 mod force_inside_system;
+mod harms_aliens;
+mod is_alien;
 mod keep_inside;
 mod movement_kind;
 mod non_player_control_system;
@@ -13,6 +16,8 @@ mod setup;
 mod update_pos_system;
 mod velocity;
 
+use harms_aliens::HarmsAliens;
+use is_alien::IsAlien;
 use keep_inside::KeepInside;
 use movement_kind::MovementKind;
 pub use position::Position;
