@@ -80,9 +80,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(NonPlayerControl, "NonPlayerControl", &[])
         .with(PlayerControl, "PlayerControl", &[])
         .with(
-            PlayerShooting {
-                shot_size: renderer.basic_shot_size(),
-            },
+            PlayerShooting::new(renderer.basic_shot_size()),
             "PlayerShooting",
             &[],
         )

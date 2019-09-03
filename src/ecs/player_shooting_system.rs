@@ -6,6 +6,16 @@ use specs::{Entities, Read, System, WriteStorage};
 
 pub struct PlayerShooting {
     pub shot_size: (u32, u32),
+    has_shot: bool,
+}
+
+impl PlayerShooting {
+    pub fn new(shot_size: (u32, u32)) -> Self {
+        PlayerShooting {
+            shot_size,
+            has_shot: false,
+        }
+    }
 }
 
 impl<'a> System<'a> for PlayerShooting {
@@ -36,8 +46,12 @@ impl<'a> System<'a> for PlayerShooting {
         use specs::Join;
         let mut fire_positions = vec![];
         for (pos, ()) in (&position, !&movement_kind).join() {
-            if control_state.fire {
+            if !self.has_shot && control_state.fire {
                 fire_positions.push(*pos);
+                self.has_shot = true;
+            }
+            if !control_state.fire {
+                self.has_shot = false;
             }
         }
 
@@ -53,7 +67,7 @@ impl<'a> System<'a> for PlayerShooting {
                     },
                     &mut position,
                 )
-                .with(Velocity { x: 20.0, y: 0.0 }, &mut velocity)
+                .with(Velocity { x: 15.0, y: 0.0 }, &mut velocity)
                 .with(RenderKind::BasicShot, &mut render_kind)
                 .with(MovementKind::Bullet, &mut movement_kind)
                 .with(ReapWhenOutside, &mut reap_when_outside)
