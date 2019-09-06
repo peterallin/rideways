@@ -13,6 +13,7 @@ mod reap_when_outside;
 mod render_all_system;
 mod render_kind;
 mod setup;
+mod spawning_system;
 mod update_pos_system;
 mod velocity;
 

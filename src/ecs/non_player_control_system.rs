@@ -5,8 +5,16 @@ pub struct NonPlayerControl;
 
 fn control_ufo(position: &Position, velocity: &mut Velocity) {
     // TODO: Get the bounding rect from Specs, and have a rect for the position
-    if position.rect.left() <= 0.0 || position.rect.right() > 800.0 {
-        velocity.x = -velocity.x;
+    if position.rect.left() <= 0.0 {
+        velocity.x = velocity.x.abs();
+    } else if position.rect.right() > 800.0 {
+        velocity.x = -velocity.x.abs();
+    }
+
+    if position.rect.top() <= 0.0 {
+        velocity.y = velocity.y.abs();
+    } else if position.rect.bottom() >= 600.0 {
+        velocity.y = -velocity.y.abs();
     }
 }
 

@@ -5,6 +5,7 @@ use super::player_control_system::PlayerControl;
 use super::player_shooting_system::PlayerShooting;
 use super::reap_outsiders_system::ReapOutsiders;
 use super::render_all_system::RenderAll;
+use super::spawning_system::Spawning;
 use super::update_pos_system::UpdatePos;
 
 use super::{
@@ -43,39 +44,6 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(KeepInside)
         .build();
 
-    world
-        .create_entity()
-        .with(Position {
-            rect: Rect::new((5.0, 100.0), ufo_size),
-        })
-        .with(Velocity { x: -3.0, y: 0.0 })
-        .with(MovementKind::UFO)
-        .with(RenderKind::UFO)
-        .with(IsAlien)
-        .build();
-
-    world
-        .create_entity()
-        .with(Position {
-            rect: Rect::new((5.0, 300.0), ufo_size),
-        })
-        .with(Velocity { x: 1.0, y: 0.0 })
-        .with(MovementKind::UFO)
-        .with(RenderKind::UFO)
-        .with(IsAlien)
-        .build();
-
-    world
-        .create_entity()
-        .with(Position {
-            rect: Rect::new((100.0, 500.0), ufo_size),
-        })
-        .with(Velocity { x: 10.0, y: -0.1 })
-        .with(MovementKind::UFO)
-        .with(RenderKind::UFO)
-        .with(IsAlien)
-        .build();
-
     let dispatcher = DispatcherBuilder::new()
         .with(NonPlayerControl, "NonPlayerControl", &[])
         .with(PlayerControl, "PlayerControl", &[])
@@ -92,6 +60,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(ReapOutsiders, "ReapOutsiders", &["UpdatePos"])
         .with(ForceInside, "ForceInside", &["UpdatePos"])
         .with(CollisionChecker, "CollisionChecker", &["ForceInside"])
+        .with(Spawning::new(ufo_size), "Spawning", &[])
         .with_thread_local(RenderAll { renderer })
         .build();
 

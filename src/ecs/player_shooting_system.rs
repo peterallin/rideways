@@ -5,7 +5,7 @@ use crate::ControlState;
 use specs::{Entities, Read, System, WriteStorage};
 
 pub struct PlayerShooting {
-    pub shot_size: (u32, u32),
+    shot_size: (u32, u32),
     has_shot: bool,
 }
 
