@@ -14,10 +14,10 @@ use specs::WorldExt;
 pub struct Arena(Rect);
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let window = graphics::Graphics::make_window("Rideways", (800, 600));
+    let window = graphics::Graphics::make_window("Rideways", (800, 600))?;
     let texture_creator = window.canvas.texture_creator();
-    let mut graphics = graphics::Graphics::new(window, &texture_creator);
-    let (mut world, mut dispatcher) = ecs::setup(graphics.renderer);
+    let mut graphics = graphics::Graphics::new(window, &texture_creator)?;
+    let (mut world, mut dispatcher) = ecs::setup(graphics.renderer)?;
     let arena = Arena(Rect::new((0.0, 32.0), (800.0, 600.0 - 32.0)));
     world.insert(arena);
     let mut control_state = ControlState::new();

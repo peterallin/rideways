@@ -1,4 +1,5 @@
 use std::collections::btree_map::BTreeMap;
+use std::error::Error;
 
 use sdl2::image::LoadTexture;
 use sdl2::pixels::Color;
@@ -22,30 +23,29 @@ pub struct Graphics<'a> {
 }
 
 impl<'a> Graphics<'a> {
-    pub fn new(window: Window, texture_creator: &'a TextureCreator<WindowContext>) -> Graphics<'a> {
-        let renderer = Renderer::new(window.canvas, &texture_creator);
-        Graphics {
+    pub fn new(
+        window: Window,
+        texture_creator: &'a TextureCreator<WindowContext>,
+    ) -> Result<Graphics<'a>, Box<dyn Error>> {
+        let renderer = Renderer::new(window.canvas, &texture_creator)?;
+        Ok(Graphics {
             event_pump: window.event_pump,
             renderer,
-        }
+        })
     }
 
-    pub fn make_window(name: &str, size: (u32, u32)) -> Window {
-        let sdl_context = sdl2::init().expect("Failed to init SDL2");
-        let video_context = sdl_context.video().expect("Failed to init video subsystem");
+    pub fn make_window(name: &str, size: (u32, u32)) -> Result<Window, Box<dyn Error>> {
+        let sdl_context = sdl2::init()?;
+        let video_context = sdl_context.video()?;
         let canvas = video_context
             .window(name, size.0, size.1)
             .position_centered()
-            .build()
-            .expect("Failed to open window")
+            .build()?
             .into_canvas()
             .present_vsync()
-            .build()
-            .expect("Failed to create canvas");
-        let event_pump = sdl_context
-            .event_pump()
-            .expect("Failed to create event pump");
-        Window { event_pump, canvas }
+            .build()?;
+        let event_pump = sdl_context.event_pump()?;
+        Ok(Window { event_pump, canvas })
     }
 }
 
@@ -55,13 +55,16 @@ pub struct Renderer<'a> {
 }
 
 impl<'a> Renderer<'a> {
-    pub fn new(canvas: Canvas, texture_creator: &'a TextureCreator<WindowContext>) -> Renderer<'a> {
+    pub fn new(
+        canvas: Canvas,
+        texture_creator: &'a TextureCreator<WindowContext>,
+    ) -> Result<Renderer<'a>, Box<dyn Error>> {
         let map = Map::new();
         let mut renderer = Renderer { map, canvas };
-        renderer.load_texture(RenderKind::UFO, "ufo.png", texture_creator);
-        renderer.load_texture(RenderKind::Player, "player.png", texture_creator);
-        renderer.load_texture(RenderKind::BasicShot, "basic_shot.png", texture_creator);
-        renderer
+        renderer.load_texture(RenderKind::UFO, "ufo.png", texture_creator)?;
+        renderer.load_texture(RenderKind::Player, "player.png", texture_creator)?;
+        renderer.load_texture(RenderKind::BasicShot, "basic_shot.png", texture_creator)?;
+        Ok(renderer)
     }
 
     fn load_texture(
@@ -69,24 +72,23 @@ impl<'a> Renderer<'a> {
         kind: RenderKind,
         filename: &str,
         texture_creator: &'a TextureCreator<WindowContext>,
-    ) {
-        let texture = texture_creator
-            .load_texture(filename)
-            .expect("Failed to load texture"); // TODO: Improve error message, include the filename
+    ) -> Result<(), Box<dyn Error>> {
+        let texture = texture_creator.load_texture(filename)?;
         let query = texture.query();
         let size = (query.width, query.height);
         self.map.insert(kind, (texture, size));
+        Ok(())
     }
 
     pub fn render(
         &mut self,
         position: &super::ecs::Position,
         render_kind: &super::ecs::RenderKind,
-    ) {
+    ) -> Result<(), Box<dyn Error>> {
         let render_info = self
             .map
             .get(render_kind)
-            .expect("Failed to get render info"); // TODO: Improve error message, include render kind
+            .ok_or_else(|| format!("Failed to get render info for {:?}", render_kind))?;
         let render_size = render_info.1;
         let dest_rect = sdl2::rect::Rect::new(
             position.rect.left() as i32,
@@ -94,9 +96,8 @@ impl<'a> Renderer<'a> {
             render_size.0,
             render_size.1,
         );
-        self.canvas
-            .copy(&render_info.0, None, dest_rect)
-            .expect("Unable to copy ufo image"); // TODO: Improve error message, include render kind
+        self.canvas.copy(&render_info.0, None, dest_rect)?;
+        Ok(())
     }
 
     pub fn clear(&mut self) {
@@ -108,18 +109,19 @@ impl<'a> Renderer<'a> {
         self.canvas.present();
     }
 
-    pub fn ufo_size(&self) -> (u32, u32) {
-        self.map.get(&RenderKind::UFO).expect("No UFO").1
+    pub fn ufo_size(&self) -> Result<(u32, u32), Box<dyn Error>> {
+        Ok(self.map.get(&RenderKind::UFO).ok_or("No UFO")?.1)
     }
 
-    pub fn player_size(&self) -> (u32, u32) {
-        self.map.get(&RenderKind::Player).expect("No player").1
+    pub fn player_size(&self) -> Result<(u32, u32), Box<dyn Error>> {
+        Ok(self.map.get(&RenderKind::Player).ok_or("No player")?.1)
     }
 
-    pub fn basic_shot_size(&self) -> (u32, u32) {
-        self.map
+    pub fn basic_shot_size(&self) -> Result<(u32, u32), Box<dyn Error>> {
+        Ok(self
+            .map
             .get(&RenderKind::BasicShot)
-            .expect("No basic shot")
-            .1
+            .ok_or("No basic shot")?
+            .1)
     }
 }

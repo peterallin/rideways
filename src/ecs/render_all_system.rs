@@ -13,7 +13,10 @@ impl<'a, 'textures> System<'a> for RenderAll<'textures> {
         use specs::Join;
         self.renderer.clear();
         for (position, render_kind) in (&positions, &render_kinds).join() {
-            self.renderer.render(position, render_kind);
+            match self.renderer.render(position, render_kind) {
+                Ok(()) => (),
+                Err(e) => eprintln!("Rendering failed: {}", e),
+            }
         }
         self.renderer.present();
     }

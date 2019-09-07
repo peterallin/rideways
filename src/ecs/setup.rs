@@ -1,3 +1,5 @@
+use std::error::Error;
+
 use super::collision_checker_system::CollisionChecker;
 use super::force_inside_system::ForceInside;
 use super::non_player_control_system::NonPlayerControl;
@@ -16,7 +18,7 @@ use crate::rect::Rect;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
-pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
+pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), Box<dyn Error>> {
     let mut world = World::new();
 
     world.register::<Position>();
@@ -28,10 +30,10 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
     world.register::<IsAlien>();
     world.register::<HarmsAliens>();
 
-    let ufo_size = (renderer.ufo_size().0 as f32, renderer.ufo_size().1 as f32);
+    let ufo_size = (renderer.ufo_size()?.0 as f32, renderer.ufo_size()?.1 as f32);
     let player_size = (
-        renderer.player_size().0 as f32,
-        renderer.player_size().1 as f32,
+        renderer.player_size()?.0 as f32,
+        renderer.player_size()?.1 as f32,
     );
 
     world
@@ -48,7 +50,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with(NonPlayerControl, "NonPlayerControl", &[])
         .with(PlayerControl, "PlayerControl", &[])
         .with(
-            PlayerShooting::new(renderer.basic_shot_size()),
+            PlayerShooting::new(renderer.basic_shot_size()?),
             "PlayerShooting",
             &[],
         )
@@ -64,5 +66,5 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> (World, Dispatcher<'_, '_>) {
         .with_thread_local(RenderAll { renderer })
         .build();
 
-    (world, dispatcher)
+    Ok((world, dispatcher))
 }
