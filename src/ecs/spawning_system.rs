@@ -1,7 +1,8 @@
 use crate::ecs::{IsAlien, MovementKind, Position, RenderKind, Velocity};
 use crate::rect::Rect;
+use crate::Arena;
 use rand::Rng;
-use specs::{Entities, System, WriteStorage};
+use specs::{Entities, Read, System, WriteStorage};
 
 pub struct Spawning {
     ufo_size: (f32, f32),
@@ -16,6 +17,7 @@ impl Spawning {
 impl<'a> System<'a> for Spawning {
     type SystemData = (
         Entities<'a>,
+        Read<'a, Arena>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, MovementKind>,
@@ -25,12 +27,23 @@ impl<'a> System<'a> for Spawning {
 
     fn run(
         &mut self,
-        (entities, mut position, mut velocity, mut movement_kind, mut render_kind, mut is_alien): Self::SystemData,
+        (
+            entities,
+            arena,
+            mut position,
+            mut velocity,
+            mut movement_kind,
+            mut render_kind,
+            mut is_alien,
+        ): Self::SystemData,
     ) {
+        let arena_rect = arena.0;
         let mut rng = rand::thread_rng();
         if rng.gen_range(0, 10000) > 9900 {
-            // TOOD: Don't hardcode the X and the Y limits, but get arena size from Specs
-            let pos = (900.0, rng.gen_range(30.0, 600.0 - self.ufo_size.1));
+            let pos = (
+                arena_rect.right() + 100.0,
+                rng.gen_range(arena_rect.top(), arena_rect.bottom() - self.ufo_size.1),
+            );
             entities
                 .build_entity()
                 .with(
