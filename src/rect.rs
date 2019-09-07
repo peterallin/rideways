@@ -80,13 +80,10 @@ impl Rect {
     }
 
     pub fn overlaps(&self, other: &Rect) -> bool {
-        if self.left() > other.right() || other.left() > self.right() {
-            false
-        } else if self.top() > other.bottom() || other.top() > self.bottom() {
-            false
-        } else {
-            true
-        }
+        !(self.left() > other.right()
+            || other.left() > self.right()
+            || self.top() > other.bottom()
+            || other.top() > self.bottom())
     }
 }
 
