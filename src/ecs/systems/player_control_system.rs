@@ -1,19 +1,19 @@
-use crate::ecs::components::{MovementKind, Velocity};
+use crate::ecs::components::{IsPlayer, Velocity};
 use crate::ControlState;
-use specs::{Read, System, WriteStorage};
+use specs::{Read, ReadStorage, System, WriteStorage};
 
 pub struct PlayerControl;
 
 impl<'a> System<'a> for PlayerControl {
     type SystemData = (
         Read<'a, ControlState>,
-        WriteStorage<'a, MovementKind>,
+        ReadStorage<'a, IsPlayer>,
         WriteStorage<'a, Velocity>,
     );
 
-    fn run(&mut self, (control_state, movement_kind, mut velocity): Self::SystemData) {
+    fn run(&mut self, (control_state, is_player, mut velocity): Self::SystemData) {
         use specs::Join;
-        for (vel, ()) in (&mut velocity, !&movement_kind).join() {
+        for (vel, _) in (&mut velocity, &is_player).join() {
             if control_state.left {
                 vel.x = -4.0;
             }

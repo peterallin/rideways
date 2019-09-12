@@ -1,9 +1,9 @@
 use crate::ecs::components::{
-    HarmsAliens, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+    HarmsAliens, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
 };
 use crate::rect::Rect;
 use crate::ControlState;
-use specs::{Entities, Read, System, WriteStorage};
+use specs::{Entities, Read, ReadStorage, System, WriteStorage};
 
 pub struct PlayerShooting {
     shot_size: (u32, u32),
@@ -29,6 +29,7 @@ impl<'a> System<'a> for PlayerShooting {
         WriteStorage<'a, RenderKind>,
         WriteStorage<'a, ReapWhenOutside>,
         WriteStorage<'a, HarmsAliens>,
+        ReadStorage<'a, IsPlayer>,
     );
 
     fn run(
@@ -42,11 +43,12 @@ impl<'a> System<'a> for PlayerShooting {
             mut render_kind,
             mut reap_when_outside,
             mut harms_aliens,
+            is_player,
         ): Self::SystemData,
     ) {
         use specs::Join;
         let mut fire_positions = vec![];
-        for (pos, ()) in (&position, !&movement_kind).join() {
+        for (pos, _) in (&position, &is_player).join() {
             if !self.has_shot && control_state.fire {
                 fire_positions.push(*pos);
                 self.has_shot = true;

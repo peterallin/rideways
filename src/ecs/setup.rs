@@ -11,7 +11,8 @@ use crate::ecs::systems::spawning_system::Spawning;
 use crate::ecs::systems::update_pos_system::UpdatePos;
 
 use crate::ecs::components::{
-    HarmsAliens, IsAlien, KeepInside, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+    HarmsAliens, IsAlien, IsPlayer, KeepInside, MovementKind, Position, ReapWhenOutside,
+    RenderKind, Velocity,
 };
 use crate::graphics::Renderer;
 use crate::rect::Rect;
@@ -21,14 +22,15 @@ use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), Box<dyn Error>> {
     let mut world = World::new();
 
-    world.register::<Position>();
-    world.register::<Velocity>();
-    world.register::<MovementKind>();
-    world.register::<RenderKind>();
-    world.register::<ReapWhenOutside>();
-    world.register::<KeepInside>();
-    world.register::<IsAlien>();
     world.register::<HarmsAliens>();
+    world.register::<IsAlien>();
+    world.register::<IsPlayer>();
+    world.register::<KeepInside>();
+    world.register::<MovementKind>();
+    world.register::<Position>();
+    world.register::<ReapWhenOutside>();
+    world.register::<RenderKind>();
+    world.register::<Velocity>();
 
     let ufo_size = (renderer.ufo_size()?.0 as f32, renderer.ufo_size()?.1 as f32);
     let player_size = (
@@ -43,6 +45,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
         })
         .with(Velocity { x: 0.0, y: 0.0 })
         .with(RenderKind::Player)
+        .with(IsPlayer)
         .with(KeepInside)
         .build();
 

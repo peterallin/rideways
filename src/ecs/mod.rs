@@ -13,6 +13,7 @@ mod systems {
 pub mod components {
     pub mod harms_aliens;
     pub mod is_alien;
+    pub mod is_player;
     pub mod keep_inside;
     pub mod movement_kind;
     pub mod position;
@@ -22,6 +23,7 @@ pub mod components {
 
     pub use harms_aliens::HarmsAliens;
     pub use is_alien::IsAlien;
+    pub use is_player::IsPlayer;
     pub use keep_inside::KeepInside;
     pub use movement_kind::MovementKind;
     pub use position::Position;
