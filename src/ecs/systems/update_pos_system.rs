@@ -1,4 +1,4 @@
-use crate::ecs::{Position, Velocity};
+use crate::ecs::components::{Position, Velocity};
 use specs::{ReadStorage, System, WriteStorage};
 
 pub struct UpdatePos;

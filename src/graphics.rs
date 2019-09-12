@@ -7,7 +7,7 @@ use sdl2::render::{Texture, TextureCreator};
 use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
-use crate::ecs::RenderKind;
+use crate::ecs::components::RenderKind;
 
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
 type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;
@@ -82,8 +82,8 @@ impl<'a> Renderer<'a> {
 
     pub fn render(
         &mut self,
-        position: &super::ecs::Position,
-        render_kind: &super::ecs::RenderKind,
+        position: &crate::ecs::components::Position,
+        render_kind: &crate::ecs::components::RenderKind,
     ) -> Result<(), Box<dyn Error>> {
         let render_info = self
             .map

@@ -1,5 +1,6 @@
-use crate::ecs::render_kind::RenderKind;
-use crate::ecs::{HarmsAliens, MovementKind, Position, ReapWhenOutside, Velocity};
+use crate::ecs::components::{
+    HarmsAliens, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+};
 use crate::rect::Rect;
 use crate::ControlState;
 use specs::{Entities, Read, System, WriteStorage};

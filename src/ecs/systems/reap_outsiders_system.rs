@@ -1,4 +1,4 @@
-use crate::ecs::{Position, ReapWhenOutside};
+use crate::ecs::components::{Position, ReapWhenOutside};
 use crate::Arena;
 use specs::{Entities, Read, ReadStorage, System};
 

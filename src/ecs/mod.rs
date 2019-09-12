@@ -1,28 +1,34 @@
-mod collision_checker_system;
-mod force_inside_system;
-mod harms_aliens;
-mod is_alien;
-mod keep_inside;
-mod movement_kind;
-mod non_player_control_system;
-mod player_control_system;
-mod player_shooting_system;
-mod position;
-mod reap_outsiders_system;
-mod reap_when_outside;
-mod render_all_system;
-mod render_kind;
-mod setup;
-mod spawning_system;
-mod update_pos_system;
-mod velocity;
+mod systems {
+    pub mod collision_checker_system;
+    pub mod force_inside_system;
+    pub mod non_player_control_system;
+    pub mod player_control_system;
+    pub mod player_shooting_system;
+    pub mod reap_outsiders_system;
+    pub mod render_all_system;
+    pub mod spawning_system;
+    pub mod update_pos_system;
+}
 
-use harms_aliens::HarmsAliens;
-use is_alien::IsAlien;
-use keep_inside::KeepInside;
-use movement_kind::MovementKind;
-pub use position::Position;
-use reap_when_outside::ReapWhenOutside;
-pub use render_kind::RenderKind;
+pub mod components {
+    pub mod harms_aliens;
+    pub mod is_alien;
+    pub mod keep_inside;
+    pub mod movement_kind;
+    pub mod position;
+    pub mod reap_when_outside;
+    pub mod render_kind;
+    pub mod velocity;
+
+    pub use harms_aliens::HarmsAliens;
+    pub use is_alien::IsAlien;
+    pub use keep_inside::KeepInside;
+    pub use movement_kind::MovementKind;
+    pub use position::Position;
+    pub use reap_when_outside::ReapWhenOutside;
+    pub use render_kind::RenderKind;
+    pub use velocity::Velocity;
+}
+
+mod setup;
 pub use setup::setup;
-use velocity::Velocity;

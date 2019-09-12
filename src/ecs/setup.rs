@@ -1,16 +1,16 @@
 use std::error::Error;
 
-use super::collision_checker_system::CollisionChecker;
-use super::force_inside_system::ForceInside;
-use super::non_player_control_system::NonPlayerControl;
-use super::player_control_system::PlayerControl;
-use super::player_shooting_system::PlayerShooting;
-use super::reap_outsiders_system::ReapOutsiders;
-use super::render_all_system::RenderAll;
-use super::spawning_system::Spawning;
-use super::update_pos_system::UpdatePos;
+use crate::ecs::systems::collision_checker_system::CollisionChecker;
+use crate::ecs::systems::force_inside_system::ForceInside;
+use crate::ecs::systems::non_player_control_system::NonPlayerControl;
+use crate::ecs::systems::player_control_system::PlayerControl;
+use crate::ecs::systems::player_shooting_system::PlayerShooting;
+use crate::ecs::systems::reap_outsiders_system::ReapOutsiders;
+use crate::ecs::systems::render_all_system::RenderAll;
+use crate::ecs::systems::spawning_system::Spawning;
+use crate::ecs::systems::update_pos_system::UpdatePos;
 
-use super::{
+use crate::ecs::components::{
     HarmsAliens, IsAlien, KeepInside, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
 };
 use crate::graphics::Renderer;
@@ -54,6 +54,8 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
             "PlayerShooting",
             &[],
         )
+        // .with(AliensShooting::new
+        // )
         .with(
             UpdatePos,
             "UpdatePos",

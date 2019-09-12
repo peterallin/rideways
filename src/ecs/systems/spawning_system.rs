@@ -1,4 +1,4 @@
-use crate::ecs::{IsAlien, MovementKind, Position, RenderKind, Velocity};
+use crate::ecs::components::{IsAlien, MovementKind, Position, RenderKind, Velocity};
 use crate::rect::Rect;
 use crate::Arena;
 use rand::Rng;

@@ -1,4 +1,4 @@
-use crate::ecs::{MovementKind, Position, Velocity};
+use crate::ecs::components::{MovementKind, Position, Velocity};
 use crate::Arena;
 use specs::{Read, ReadStorage, System, WriteStorage};
 

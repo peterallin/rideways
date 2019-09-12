@@ -1,4 +1,4 @@
-use crate::ecs::{Position, RenderKind};
+use crate::ecs::components::{Position, RenderKind};
 use crate::graphics::Renderer;
 use specs::{ReadStorage, System};
 

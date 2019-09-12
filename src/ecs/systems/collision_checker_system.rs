@@ -1,4 +1,4 @@
-use crate::ecs::{HarmsAliens, IsAlien, Position};
+use crate::ecs::components::{HarmsAliens, IsAlien, Position};
 use specs::{Entities, ReadStorage, System};
 
 pub struct CollisionChecker;

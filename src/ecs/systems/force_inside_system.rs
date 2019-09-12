@@ -1,4 +1,4 @@
-use crate::ecs::{KeepInside, Position};
+use crate::ecs::components::{KeepInside, Position};
 use crate::Arena;
 use specs::{Read, ReadStorage, System, WriteStorage};
 
