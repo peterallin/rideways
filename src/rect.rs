@@ -74,6 +74,13 @@ impl Rect {
         (self.left, self.top + self.height / 2.0)
     }
 
+    pub fn center(&self) -> (f32, f32) {
+        (
+            self.left + self.width() / 2.0,
+            self.top + self.height() / 2.0,
+        )
+    }
+
     pub fn r#move(&mut self, dx: f32, dy: f32) {
         self.left += dx;
         self.top += dy;

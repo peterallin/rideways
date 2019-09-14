@@ -7,4 +7,5 @@ pub enum RenderKind {
     Player,
     BasicShot,
     UFO,
+    UFOShot,
 }

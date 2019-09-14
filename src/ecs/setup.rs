@@ -1,5 +1,6 @@
 use std::error::Error;
 
+use crate::ecs::systems::alien_shooting_system::AlienShooting;
 use crate::ecs::systems::collision_checker_system::CollisionChecker;
 use crate::ecs::systems::force_inside_system::ForceInside;
 use crate::ecs::systems::non_player_control_system::NonPlayerControl;
@@ -11,8 +12,8 @@ use crate::ecs::systems::spawning_system::Spawning;
 use crate::ecs::systems::update_pos_system::UpdatePos;
 
 use crate::ecs::components::{
-    HarmsAliens, IsAlien, IsPlayer, KeepInside, MovementKind, Position, ReapWhenOutside,
-    RenderKind, Velocity,
+    HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, KeepInside, MovementKind, Position,
+    ReapWhenOutside, RenderKind, Velocity,
 };
 use crate::graphics::Renderer;
 use crate::rect::Rect;
@@ -23,6 +24,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
     let mut world = World::new();
 
     world.register::<HarmsAliens>();
+    world.register::<HarmsPlayer>();
     world.register::<IsAlien>();
     world.register::<IsPlayer>();
     world.register::<KeepInside>();
@@ -57,8 +59,11 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
             "PlayerShooting",
             &[],
         )
-        // .with(AliensShooting::new
-        // )
+        .with(
+            AlienShooting::new(renderer.ufo_shot_size()?),
+            "AlienShooting",
+            &[],
+        )
         .with(
             UpdatePos,
             "UpdatePos",

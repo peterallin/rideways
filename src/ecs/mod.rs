@@ -1,4 +1,5 @@
 mod systems {
+    pub mod alien_shooting_system;
     pub mod collision_checker_system;
     pub mod force_inside_system;
     pub mod non_player_control_system;
@@ -12,6 +13,7 @@ mod systems {
 
 pub mod components {
     pub mod harms_aliens;
+    pub mod harms_player;
     pub mod is_alien;
     pub mod is_player;
     pub mod keep_inside;
@@ -22,6 +24,7 @@ pub mod components {
     pub mod velocity;
 
     pub use harms_aliens::HarmsAliens;
+    pub use harms_player::HarmsPlayer;
     pub use is_alien::IsAlien;
     pub use is_player::IsPlayer;
     pub use keep_inside::KeepInside;

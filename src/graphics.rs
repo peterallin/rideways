@@ -64,6 +64,7 @@ impl<'a> Renderer<'a> {
         renderer.load_texture(RenderKind::UFO, "ufo.png", texture_creator)?;
         renderer.load_texture(RenderKind::Player, "player.png", texture_creator)?;
         renderer.load_texture(RenderKind::BasicShot, "basic_shot.png", texture_creator)?;
+        renderer.load_texture(RenderKind::UFOShot, "ufo_shot.png", texture_creator)?;
         Ok(renderer)
     }
 
@@ -123,5 +124,9 @@ impl<'a> Renderer<'a> {
             .get(&RenderKind::BasicShot)
             .ok_or("No basic shot")?
             .1)
+    }
+
+    pub fn ufo_shot_size(&self) -> Result<(u32, u32), Box<dyn Error>> {
+        Ok(self.map.get(&RenderKind::UFOShot).ok_or("No UFO shot")?.1)
     }
 }
