@@ -1,7 +1,7 @@
 use crate::ecs::components::{
     HarmsAliens, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
 };
-use crate::rect::Rect;
+use crate::geometry::Rect;
 use crate::ControlState;
 use specs::{Entities, Read, ReadStorage, System, WriteStorage};
 

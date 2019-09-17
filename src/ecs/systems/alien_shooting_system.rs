@@ -1,7 +1,7 @@
 use crate::ecs::components::{
     HarmsPlayer, IsAlien, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
 };
-use crate::rect::{Rect, RectSize};
+use crate::geometry::{Rect, RectSize};
 use rand::Rng;
 use specs::{Entities, ReadStorage, System, WriteStorage};
 

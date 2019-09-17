@@ -1,5 +1,5 @@
 use crate::ecs::components::{IsAlien, MovementKind, Position, RenderKind, Velocity};
-use crate::rect::{Rect, RectSize};
+use crate::geometry::{Rect, RectSize};
 use crate::Arena;
 use rand::Rng;
 use specs::{Entities, Read, System, WriteStorage};

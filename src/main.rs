@@ -2,11 +2,11 @@ use std::error::Error;
 
 mod control_state;
 mod ecs;
+mod geometry;
 mod graphics;
-mod rect;
 
 use control_state::ControlState;
-use rect::Rect;
+use geometry::Rect;
 
 use specs::WorldExt;
 

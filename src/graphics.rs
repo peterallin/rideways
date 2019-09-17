@@ -8,7 +8,7 @@ use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
 use crate::ecs::components::RenderKind;
-use crate::rect::RectSize;
+use crate::geometry::RectSize;
 
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
 type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;

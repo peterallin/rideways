@@ -15,8 +15,8 @@ use crate::ecs::components::{
     HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, KeepInside, MovementKind, Position,
     ReapWhenOutside, RenderKind, Velocity,
 };
+use crate::geometry::Rect;
 use crate::graphics::Renderer;
-use crate::rect::Rect;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
