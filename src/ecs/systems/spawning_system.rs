@@ -1,15 +1,15 @@
 use crate::ecs::components::{IsAlien, MovementKind, Position, RenderKind, Velocity};
-use crate::rect::Rect;
+use crate::rect::{Rect, RectSize};
 use crate::Arena;
 use rand::Rng;
 use specs::{Entities, Read, System, WriteStorage};
 
 pub struct Spawning {
-    ufo_size: (f32, f32),
+    ufo_size: RectSize,
 }
 
 impl Spawning {
-    pub fn new(ufo_size: (f32, f32)) -> Self {
+    pub fn new(ufo_size: RectSize) -> Self {
         Spawning { ufo_size }
     }
 }

@@ -63,10 +63,7 @@ impl<'a> System<'a> for PlayerShooting {
                 .build_entity()
                 .with(
                     Position {
-                        rect: Rect::new(
-                            pos.rect.midright(),
-                            (self.shot_size.0 as f32, self.shot_size.1 as f32),
-                        ),
+                        rect: Rect::new(pos.rect.midright(), self.shot_size.into()),
                     },
                     &mut position,
                 )

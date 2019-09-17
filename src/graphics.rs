@@ -8,6 +8,7 @@ use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
 use crate::ecs::components::RenderKind;
+use crate::rect::RectSize;
 
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
 type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;
@@ -126,7 +127,7 @@ impl<'a> Renderer<'a> {
             .1)
     }
 
-    pub fn ufo_shot_size(&self) -> Result<(u32, u32), Box<dyn Error>> {
-        Ok(self.map.get(&RenderKind::UFOShot).ok_or("No UFO shot")?.1)
+    pub fn ufo_shot_size(&self) -> Result<RectSize, Box<dyn Error>> {
+        Ok((self.map.get(&RenderKind::UFOShot).ok_or("No UFO shot")?.1).into())
     }
 }

@@ -34,11 +34,8 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
     world.register::<RenderKind>();
     world.register::<Velocity>();
 
-    let ufo_size = (renderer.ufo_size()?.0 as f32, renderer.ufo_size()?.1 as f32);
-    let player_size = (
-        renderer.player_size()?.0 as f32,
-        renderer.player_size()?.1 as f32,
-    );
+    let ufo_size = renderer.ufo_size()?.into();
+    let player_size = renderer.player_size()?.into();
 
     world
         .create_entity()

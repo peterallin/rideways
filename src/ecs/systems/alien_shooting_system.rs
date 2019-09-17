@@ -1,16 +1,16 @@
 use crate::ecs::components::{
     HarmsPlayer, IsAlien, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
 };
-use crate::rect::Rect;
+use crate::rect::{Rect, RectSize};
 use rand::Rng;
 use specs::{Entities, ReadStorage, System, WriteStorage};
 
 pub struct AlienShooting {
-    shot_size: (u32, u32),
+    shot_size: RectSize,
 }
 
 impl AlienShooting {
-    pub fn new(shot_size: (u32, u32)) -> Self {
+    pub fn new(shot_size: RectSize) -> Self {
         AlienShooting { shot_size }
     }
 }
@@ -71,10 +71,7 @@ impl<'a> System<'a> for AlienShooting {
                     .build_entity()
                     .with(
                         Position {
-                            rect: Rect::new(
-                                shot_pos,
-                                (self.shot_size.0 as f32, self.shot_size.1 as f32),
-                            ),
+                            rect: Rect::new(shot_pos, self.shot_size.into()),
                         },
                         &mut position,
                     )
