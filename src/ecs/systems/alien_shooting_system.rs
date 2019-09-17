@@ -64,7 +64,7 @@ impl<'a> System<'a> for AlienShooting {
                     player_pos.rect.center().1 - pos.rect.center().1,
                 );
                 let diff_size = (diff.0.powf(2.0) + diff.1.powf(2.0)).sqrt();
-                let speed = 8.0;
+                let speed = 500.0;
                 let vel = (speed * diff.0 / diff_size, speed * diff.1 / diff_size);
                 let shot_pos = pos.rect.center();
                 entities

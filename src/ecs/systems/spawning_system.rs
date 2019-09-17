@@ -54,8 +54,8 @@ impl<'a> System<'a> for Spawning {
                 )
                 .with(
                     Velocity {
-                        x: rng.gen_range(-8.0, -2.0),
-                        y: rng.gen_range(-0.5, 0.5),
+                        x: rng.gen_range(-600.0, -200.0),
+                        y: rng.gen_range(-35.0, 35.0),
                     },
                     &mut velocity,
                 )

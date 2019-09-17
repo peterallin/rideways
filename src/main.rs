@@ -12,6 +12,8 @@ use specs::WorldExt;
 
 #[derive(Default)]
 pub struct Arena(Rect);
+#[derive(Default, Debug)]
+pub struct ElapsedSeconds(f32);
 
 fn main() -> Result<(), Box<dyn Error>> {
     let window_size = (1200, 600);
@@ -26,8 +28,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     world.insert(arena);
     let mut control_state = ControlState::new();
 
+    let mut previous_time = time::precise_time_s();
     loop {
+        let time = time::precise_time_s();
+        let delta_time = time - previous_time;
+        previous_time = time;
+
         world.insert(control_state);
+        world.insert(ElapsedSeconds(delta_time as f32));
         let event = graphics.event_pump.poll_event();
         if let Some(event) = event {
             match event {

@@ -70,7 +70,7 @@ impl<'a> System<'a> for PlayerShooting {
                     },
                     &mut position,
                 )
-                .with(Velocity { x: 15.0, y: 0.0 }, &mut velocity)
+                .with(Velocity { x: 1500.0, y: 0.0 }, &mut velocity)
                 .with(RenderKind::BasicShot, &mut render_kind)
                 .with(MovementKind::Bullet, &mut movement_kind)
                 .with(ReapWhenOutside, &mut reap_when_outside)
