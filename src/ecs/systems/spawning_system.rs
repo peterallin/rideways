@@ -40,10 +40,9 @@ impl<'a> System<'a> for Spawning {
         let arena_rect = arena.0;
         let mut rng = rand::thread_rng();
         if rng.gen_range(0, 10000) > 9900 {
-            let pos = (
-                arena_rect.right() + 100.0,
-                rng.gen_range(arena_rect.top(), arena_rect.bottom() - self.ufo_size.1),
-            );
+            let x = arena_rect.right() + 100.0;
+            let y = rng.gen_range(arena_rect.top(), arena_rect.bottom() - self.ufo_size.1);
+            let pos = (x, y).into();
             entities
                 .build_entity()
                 .with(

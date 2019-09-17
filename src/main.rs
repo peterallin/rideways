@@ -22,7 +22,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut graphics = graphics::Graphics::new(window, &texture_creator)?;
     let (mut world, mut dispatcher) = ecs::setup(graphics.renderer)?;
     let arena = Arena(Rect::new(
-        (0.0, 32.0),
+        (0.0, 32.0).into(),
         (window_size.0, window_size.1 - 32).into(),
     ));
     world.insert(arena);

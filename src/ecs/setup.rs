@@ -40,7 +40,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
     world
         .create_entity()
         .with(Position {
-            rect: Rect::new((0.0, 300.0), player_size),
+            rect: Rect::new((0, 300).into(), player_size),
         })
         .with(Velocity { x: 0.0, y: 0.0 })
         .with(RenderKind::Player)
