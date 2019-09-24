@@ -4,6 +4,5 @@ use specs_derive::Component;
 #[derive(Debug, Component)]
 #[storage(VecStorage)]
 pub enum MovementKind {
-    UFO,
-    Bullet,
+    SideToSide,
 }

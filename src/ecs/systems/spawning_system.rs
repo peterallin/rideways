@@ -58,7 +58,7 @@ impl<'a> System<'a> for Spawning {
                     },
                     &mut velocity,
                 )
-                .with(MovementKind::UFO, &mut movement_kind)
+                .with(MovementKind::SideToSide, &mut movement_kind)
                 .with(RenderKind::UFO, &mut render_kind)
                 .with(IsAlien, &mut is_alien)
                 .build();

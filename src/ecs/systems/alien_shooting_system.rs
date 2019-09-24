@@ -1,5 +1,5 @@
 use crate::ecs::components::{
-    HarmsPlayer, IsAlien, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+    HarmsPlayer, IsAlien, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity,
 };
 use crate::geometry::{Rect, RectSize};
 use rand::Rng;
@@ -18,7 +18,6 @@ impl AlienShooting {
 impl<'a> System<'a> for AlienShooting {
     type SystemData = (
         Entities<'a>,
-        WriteStorage<'a, MovementKind>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, RenderKind>,
@@ -32,7 +31,6 @@ impl<'a> System<'a> for AlienShooting {
         &mut self,
         (
             entities,
-            mut movement_kind,
             mut position,
             mut velocity,
             mut render_kind,
@@ -74,7 +72,6 @@ impl<'a> System<'a> for AlienShooting {
                     )
                     .with(Velocity { x: vel.0, y: vel.1 }, &mut velocity)
                     .with(RenderKind::UFOShot, &mut render_kind)
-                    .with(MovementKind::Bullet, &mut movement_kind)
                     .with(ReapWhenOutside, &mut reap_when_outside)
                     .with(HarmsPlayer, &mut harms_player)
                     .build();

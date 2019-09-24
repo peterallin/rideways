@@ -1,5 +1,5 @@
 use crate::ecs::components::{
-    HarmsAliens, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+    HarmsAliens, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity,
 };
 use crate::geometry::Rect;
 use crate::ControlState;
@@ -23,7 +23,6 @@ impl<'a> System<'a> for PlayerShooting {
     type SystemData = (
         Read<'a, ControlState>,
         Entities<'a>,
-        WriteStorage<'a, MovementKind>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, RenderKind>,
@@ -37,7 +36,6 @@ impl<'a> System<'a> for PlayerShooting {
         (
             control_state,
             entities,
-            mut movement_kind,
             mut position,
             mut velocity,
             mut render_kind,
@@ -69,7 +67,6 @@ impl<'a> System<'a> for PlayerShooting {
                 )
                 .with(Velocity { x: 1500.0, y: 0.0 }, &mut velocity)
                 .with(RenderKind::BasicShot, &mut render_kind)
-                .with(MovementKind::Bullet, &mut movement_kind)
                 .with(ReapWhenOutside, &mut reap_when_outside)
                 .with(HarmsAliens, &mut harms_aliens)
                 .build();
