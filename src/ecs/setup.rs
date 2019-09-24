@@ -12,9 +12,10 @@ use crate::ecs::systems::spawning_system::Spawning;
 use crate::ecs::systems::update_pos_system::UpdatePos;
 
 use crate::ecs::components::{
-    HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, KeepInside, MovementKind, Position,
+    HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, KeepInside, Lifetime, MovementKind, Position,
     ReapWhenOutside, RenderKind, Velocity,
 };
+use crate::ecs::systems::lifetime_system::LifetimeWatching;
 use crate::geometry::Rect;
 use crate::graphics::Renderer;
 use specs::world::WorldExt;
@@ -23,6 +24,7 @@ use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), Box<dyn Error>> {
     let mut world = World::new();
 
+    world.register::<Lifetime>();
     world.register::<HarmsAliens>();
     world.register::<HarmsPlayer>();
     world.register::<IsAlien>();
@@ -70,6 +72,7 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
         .with(ForceInside, "ForceInside", &["UpdatePos"])
         .with(CollisionChecker, "CollisionChecker", &["ForceInside"])
         .with(Spawning::new(ufo_size), "Spawning", &[])
+        .with(LifetimeWatching, "LifetimeWatcing", &[])
         .with_thread_local(RenderAll { renderer })
         .build();
 

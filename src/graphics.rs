@@ -3,7 +3,7 @@ use std::error::Error;
 
 use sdl2::image::LoadTexture;
 use sdl2::pixels::Color;
-use sdl2::render::{Texture, TextureCreator};
+use sdl2::render::{BlendMode, Texture, TextureCreator};
 use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
@@ -62,10 +62,36 @@ impl<'a> Renderer<'a> {
     ) -> Result<Renderer<'a>, Box<dyn Error>> {
         let map = Map::new();
         let mut renderer = Renderer { map, canvas };
-        renderer.load_texture(RenderKind::UFO, "ufo.png", texture_creator)?;
-        renderer.load_texture(RenderKind::Player, "player.png", texture_creator)?;
-        renderer.load_texture(RenderKind::BasicShot, "basic_shot.png", texture_creator)?;
-        renderer.load_texture(RenderKind::UFOShot, "ufo_shot.png", texture_creator)?;
+        renderer.load_texture(
+            RenderKind::UFO,
+            "ufo.png",
+            texture_creator,
+            BlendMode::Blend,
+        )?;
+        renderer.load_texture(
+            RenderKind::Player,
+            "player.png",
+            texture_creator,
+            BlendMode::Blend,
+        )?;
+        renderer.load_texture(
+            RenderKind::BasicShot,
+            "basic_shot.png",
+            texture_creator,
+            BlendMode::Blend,
+        )?;
+        renderer.load_texture(
+            RenderKind::UFOShot,
+            "ufo_shot.png",
+            texture_creator,
+            BlendMode::Blend,
+        )?;
+        renderer.load_texture(
+            RenderKind::Foobar,
+            "ufo_shot.png",
+            texture_creator,
+            BlendMode::Add,
+        )?;
         Ok(renderer)
     }
 
@@ -74,8 +100,10 @@ impl<'a> Renderer<'a> {
         kind: RenderKind,
         filename: &str,
         texture_creator: &'a TextureCreator<WindowContext>,
+        blend_mode: BlendMode,
     ) -> Result<(), Box<dyn Error>> {
-        let texture = texture_creator.load_texture(filename)?;
+        let mut texture = texture_creator.load_texture(filename)?;
+        texture.set_blend_mode(blend_mode);
         let query = texture.query();
         let size = (query.width, query.height);
         self.map.insert(kind, (texture, size));

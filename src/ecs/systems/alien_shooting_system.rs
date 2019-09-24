@@ -1,5 +1,6 @@
 use crate::ecs::components::{
-    HarmsPlayer, IsAlien, IsPlayer, MovementKind, Position, ReapWhenOutside, RenderKind, Velocity,
+    HarmsPlayer, IsAlien, IsPlayer, Lifetime, MovementKind, Position, ReapWhenOutside, RenderKind,
+    Velocity,
 };
 use crate::geometry::{Rect, RectSize};
 use rand::Rng;
@@ -24,6 +25,7 @@ impl<'a> System<'a> for AlienShooting {
         WriteStorage<'a, RenderKind>,
         WriteStorage<'a, ReapWhenOutside>,
         WriteStorage<'a, HarmsPlayer>,
+        WriteStorage<'a, Lifetime>,
         ReadStorage<'a, IsAlien>,
         ReadStorage<'a, IsPlayer>,
     );
@@ -38,11 +40,35 @@ impl<'a> System<'a> for AlienShooting {
             mut render_kind,
             mut reap_when_outside,
             mut harms_player,
+            mut lifetimes,
             is_alien,
             is_player,
         ): Self::SystemData,
     ) {
         let mut rng = rand::thread_rng();
+
+        let center = (500, 500);
+        for _ in 0..3 {
+            let new_pos = center;
+            let direction = rng.gen_range(0, 360) as f32;
+            let speed = rng.gen_range(20.0, 200.0);
+            let velocity_x = speed * direction.cos();
+            let velocity_y = speed * direction.sin();
+            let rect = Rect::new(new_pos.into(), self.shot_size);
+            let particle_position = Position { rect };
+            let particle_velocity = Velocity {
+                x: velocity_x,
+                y: velocity_y,
+            };
+            entities
+                .build_entity()
+                .with(particle_position, &mut position)
+                .with(particle_velocity, &mut velocity)
+                .with(RenderKind::Foobar, &mut render_kind)
+                .with(ReapWhenOutside, &mut reap_when_outside)
+                .with(Lifetime { seconds: 0.3 }, &mut lifetimes)
+                .build();
+        }
 
         use specs::Join;
         let mut fire_positions = vec![];
