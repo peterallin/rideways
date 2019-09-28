@@ -4,17 +4,17 @@ use crate::Arena;
 use rand::Rng;
 use specs::{Entities, Read, System, WriteStorage};
 
-pub struct Spawning {
+pub struct EnemySpawning {
     ufo_size: RectSize,
 }
 
-impl Spawning {
+impl EnemySpawning {
     pub fn new(ufo_size: RectSize) -> Self {
-        Spawning { ufo_size }
+        EnemySpawning { ufo_size }
     }
 }
 
-impl<'a> System<'a> for Spawning {
+impl<'a> System<'a> for EnemySpawning {
     type SystemData = (
         Entities<'a>,
         Read<'a, Arena>,

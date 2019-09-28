@@ -8,4 +8,5 @@ pub enum RenderKind {
     BasicShot,
     UFO,
     UFOShot,
+    Glow,
 }
