@@ -8,7 +8,6 @@ mod systems {
     pub mod player_control_system;
     pub mod player_shooting_system;
     pub mod reap_outsiders_system;
-    pub mod render_all_system;
     pub mod spawner_spawning_system;
     pub mod update_pos_system;
 }

@@ -9,7 +9,6 @@ use crate::ecs::systems::non_player_control_system::NonPlayerControl;
 use crate::ecs::systems::player_control_system::PlayerControl;
 use crate::ecs::systems::player_shooting_system::PlayerShooting;
 use crate::ecs::systems::reap_outsiders_system::ReapOutsiders;
-use crate::ecs::systems::render_all_system::RenderAll;
 use crate::ecs::systems::spawner_spawning_system::SpawnerSpawning;
 use crate::ecs::systems::update_pos_system::UpdatePos;
 
@@ -22,7 +21,7 @@ use crate::graphics::Renderer;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
-pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), Box<dyn Error>> {
+pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>), Box<dyn Error>> {
     let mut world = World::new();
 
     world.register::<HarmsAliens>();
@@ -76,7 +75,6 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
         .with(EnemySpawning::new(ufo_size), "EnemySpawning", &[])
         .with(SpawnerSpawning, "SpawnerSpawning", &[])
         .with(LifetimeWatching, "LifetimeWatching", &[])
-        .with_thread_local(RenderAll { renderer })
         .build();
 
     Ok((world, dispatcher))

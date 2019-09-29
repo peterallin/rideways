@@ -8,7 +8,8 @@ mod graphics;
 use control_state::ControlState;
 use geometry::Rect;
 
-use specs::WorldExt;
+use ecs::components::{Position, RenderKind};
+use specs::{ReadStorage, WorldExt};
 
 #[derive(Default)]
 pub struct Arena(Rect);
@@ -20,7 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let window = graphics::Graphics::make_window("Rideways", window_size)?;
     let texture_creator = window.canvas.texture_creator();
     let mut graphics = graphics::Graphics::new(window, &texture_creator)?;
-    let (mut world, mut dispatcher) = ecs::setup(graphics.renderer)?;
+    let (mut world, mut dispatcher) = ecs::setup(&graphics.renderer)?;
     let arena = Arena(Rect::new(
         (0.0, 32.0).into(),
         (window_size.0, window_size.1 - 32).into(),
@@ -45,6 +46,15 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
         world.maintain();
         dispatcher.dispatch(&world);
+
+        type RenderSystemData<'a> = (ReadStorage<'a, Position>, ReadStorage<'a, RenderKind>);
+        let (positions, render_kinds): RenderSystemData = world.system_data();
+        use specs::Join;
+        graphics.renderer.clear();
+        for (position, render_kind) in (&positions, &render_kinds).join() {
+            graphics.renderer.render(position, render_kind)?;
+        }
+        graphics.renderer.present();
     }
 
     Ok(())
