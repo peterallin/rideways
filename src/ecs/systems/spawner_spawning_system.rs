@@ -39,9 +39,9 @@ impl<'a> System<'a> for SpawnerSpawning {
             match kind {
                 SpawnerKind::Fire => {
                     let speed = rng.gen_range(100, 400) as f32;
-                    let direction = rng.gen_range(0, 360) as f32;
+                    let direction = rng.gen_range(0, 360) as f32 / 180.0 * std::f32::consts::PI;
                     let velocity_x = speed * direction.cos();
-                    let velocity_y = speed * direction.sin();
+                    let velocity_y = -speed * direction.sin();
                     entities
                         .build_entity()
                         .with(RenderKind::Glow, &mut render_kind)
