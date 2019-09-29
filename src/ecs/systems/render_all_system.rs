@@ -3,7 +3,7 @@ use crate::graphics::Renderer;
 use specs::{ReadStorage, System};
 
 pub struct RenderAll<'textures> {
-    pub renderer: Renderer<'textures>,
+    pub renderer: &'textures Renderer<'textures>,
 }
 
 impl<'a, 'textures> System<'a> for RenderAll<'textures> {

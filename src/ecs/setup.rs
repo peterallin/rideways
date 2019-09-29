@@ -22,7 +22,9 @@ use crate::graphics::Renderer;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
-pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), Box<dyn Error>> {
+pub fn setup<'a>(
+    renderer: &'a mut Renderer<'a>,
+) -> Result<(World, Dispatcher<'a, 'a>), Box<dyn Error>> {
     let mut world = World::new();
 
     world.register::<HarmsAliens>();
@@ -76,7 +78,9 @@ pub fn setup<'a>(renderer: Renderer<'a>) -> Result<(World, Dispatcher<'_, '_>), 
         .with(EnemySpawning::new(ufo_size), "EnemySpawning", &[])
         .with(SpawnerSpawning, "SpawnerSpawning", &[])
         .with(LifetimeWatching, "LifetimeWatching", &[])
-        .with_thread_local(RenderAll { renderer })
+        .with_thread_local(RenderAll {
+            renderer: &renderer,
+        })
         .build();
 
     Ok((world, dispatcher))
