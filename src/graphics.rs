@@ -52,7 +52,7 @@ impl<'a> Graphics<'a> {
 
 pub struct Renderer<'a> {
     map: Map<'a>,
-    canvas: Canvas,
+    pub canvas: Canvas,
 }
 
 impl<'a> Renderer<'a> {

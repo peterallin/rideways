@@ -38,18 +38,6 @@ pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>),
     world.register::<Velocity>();
 
     let ufo_size = renderer.ufo_size()?.into();
-    let player_size = renderer.player_size()?.into();
-
-    world
-        .create_entity()
-        .with(Position {
-            rect: Rect::new((0, 300).into(), player_size),
-        })
-        .with(Velocity { x: 0.0, y: 0.0 })
-        .with(RenderKind::Player)
-        .with(IsPlayer)
-        .with(KeepInside)
-        .build();
 
     let dispatcher = DispatcherBuilder::new()
         .with(NonPlayerControl, "NonPlayerControl", &[])
@@ -78,4 +66,25 @@ pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>),
         .build();
 
     Ok((world, dispatcher))
+}
+
+pub fn initialize_world<'a>(
+    world: &mut World,
+    renderer: &Renderer<'a>,
+) -> Result<(), Box<dyn Error>> {
+    world.delete_all();
+
+    let player_size = renderer.player_size()?.into();
+    world
+        .create_entity()
+        .with(Position {
+            rect: Rect::new((0, 300).into(), player_size),
+        })
+        .with(Velocity { x: 0.0, y: 0.0 })
+        .with(RenderKind::Player)
+        .with(IsPlayer)
+        .with(KeepInside)
+        .build();
+
+    Ok(())
 }
