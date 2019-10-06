@@ -41,4 +41,5 @@ pub mod components {
 }
 
 mod setup;
+pub use setup::initialize_world;
 pub use setup::setup;
