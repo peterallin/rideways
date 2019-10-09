@@ -50,21 +50,10 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
 
+        graphics.clear();
         state = match state {
             GameState::Idle { button_pressed } => {
-                let state = idle(button_pressed, control_state, &mut graphics);
-                graphics.draw_text(
-                    "Rideways",
-                    (600, 300),
-                    Color::RGBA(255, 0, 0, 0),
-                    FontType::Title,
-                )?;
-                graphics.draw_text(
-                    "Press fire to play",
-                    (600, 500),
-                    Color::RGBA(255, 0, 0, 0),
-                    FontType::Info,
-                )?;
+                let state = idle(button_pressed, control_state, &mut graphics)?;
                 if let GameState::Playing = state {
                     ecs::initialize_world(&mut world, graphics.entity_sizes()?)?;
                 }
@@ -92,7 +81,6 @@ fn game_over(
     seconds_passed: f64,
     graphics: &mut Graphics,
 ) -> Result<GameState, Box<dyn Error>> {
-    graphics.clear();
     graphics.draw_text(
         "Game Over",
         (600, 300),
@@ -112,9 +100,24 @@ fn game_over(
     Ok(new_state)
 }
 
-fn idle(button_pressed: bool, control_state: ControlState, graphics: &mut Graphics) -> GameState {
-    graphics.clear();
-    if control_state.fire {
+fn idle(
+    button_pressed: bool,
+    control_state: ControlState,
+    graphics: &mut Graphics,
+) -> Result<GameState, Box<dyn Error>> {
+    graphics.draw_text(
+        "Rideways",
+        (600, 300),
+        Color::RGBA(255, 0, 0, 0),
+        FontType::Title,
+    )?;
+    graphics.draw_text(
+        "Press fire to play",
+        (600, 500),
+        Color::RGBA(255, 0, 0, 0),
+        FontType::Info,
+    )?;
+    let new_state = if control_state.fire {
         GameState::Idle {
             button_pressed: true,
         }
@@ -122,7 +125,8 @@ fn idle(button_pressed: bool, control_state: ControlState, graphics: &mut Graphi
         GameState::Playing
     } else {
         GameState::Idle { button_pressed }
-    }
+    };
+    Ok(new_state)
 }
 
 fn play(
@@ -137,7 +141,6 @@ fn play(
     world.maintain();
 
     dispatcher.dispatch(&world);
-    graphics.clear();
     type RenderSystemData<'a> = (ReadStorage<'a, Position>, ReadStorage<'a, RenderKind>);
     let (positions, render_kinds): RenderSystemData = world.system_data();
     for (position, render_kind) in (&positions, &render_kinds).join() {
