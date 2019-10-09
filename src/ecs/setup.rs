@@ -16,12 +16,12 @@ use crate::ecs::components::{
     HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, KeepInside, Lifetime, MovementKind, Position,
     ReapWhenOutside, RenderKind, SpawnerKind, Velocity,
 };
+use crate::entity_sizes::EntitySizes;
 use crate::geometry::Rect;
-use crate::graphics::Renderer;
 use specs::world::WorldExt;
 use specs::{Builder, Dispatcher, DispatcherBuilder, World};
 
-pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>), Box<dyn Error>> {
+pub fn setup<'a>(entity_sizes: EntitySizes) -> Result<(World, Dispatcher<'a, 'a>), Box<dyn Error>> {
     let mut world = World::new();
 
     world.register::<HarmsAliens>();
@@ -37,18 +37,16 @@ pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>),
     world.register::<SpawnerKind>();
     world.register::<Velocity>();
 
-    let ufo_size = renderer.ufo_size()?.into();
-
     let dispatcher = DispatcherBuilder::new()
         .with(NonPlayerControl, "NonPlayerControl", &[])
         .with(PlayerControl, "PlayerControl", &[])
         .with(
-            PlayerShooting::new(renderer.basic_shot_size()?),
+            PlayerShooting::new(entity_sizes.basic_shot_size),
             "PlayerShooting",
             &[],
         )
         .with(
-            AlienShooting::new(renderer.ufo_shot_size()?),
+            AlienShooting::new(entity_sizes.ufo_shot_size.into()),
             "AlienShooting",
             &[],
         )
@@ -60,7 +58,11 @@ pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>),
         .with(ReapOutsiders, "ReapOutsiders", &["UpdatePos"])
         .with(ForceInside, "ForceInside", &["UpdatePos"])
         .with(CollisionChecker, "CollisionChecker", &["ForceInside"])
-        .with(EnemySpawning::new(ufo_size), "EnemySpawning", &[])
+        .with(
+            EnemySpawning::new(entity_sizes.ufo_size.into()),
+            "EnemySpawning",
+            &[],
+        )
         .with(SpawnerSpawning, "SpawnerSpawning", &[])
         .with(LifetimeWatching, "LifetimeWatching", &[])
         .build();
@@ -68,13 +70,13 @@ pub fn setup<'a>(renderer: &Renderer<'a>) -> Result<(World, Dispatcher<'a, 'a>),
     Ok((world, dispatcher))
 }
 
-pub fn initialize_world<'a>(
+pub fn initialize_world(
     world: &mut World,
-    renderer: &Renderer<'a>,
+    entity_sizes: EntitySizes,
 ) -> Result<(), Box<dyn Error>> {
     world.delete_all();
 
-    let player_size = renderer.player_size()?.into();
+    let player_size = entity_sizes.player_size.into();
     world
         .create_entity()
         .with(Position {
