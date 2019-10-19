@@ -14,6 +14,11 @@ use crate::entity_sizes::EntitySizes;
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
 type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;
 
+pub enum TextPosition {
+    Center(u32, u32),
+    TopRight(u32, u32),
+}
+
 pub struct Window {
     pub canvas: Canvas,
     pub event_pump: EventPump,
@@ -109,7 +114,7 @@ impl<'a> Graphics<'a> {
     pub fn draw_text(
         &mut self,
         text: &str,
-        center_position: (u32, u32),
+        text_position: TextPosition,
         color: Color,
         font_type: FontType,
     ) -> Result<(), Box<dyn Error>> {
@@ -121,10 +126,10 @@ impl<'a> Graphics<'a> {
             .texture_creator
             .create_texture_from_surface(font.render(text).solid(color)?)?;
         let query = texture.query();
-        let top_left = (
-            center_position.0 - query.width / 2,
-            center_position.1 - query.height / 2,
-        );
+        let top_left = match text_position {
+            TextPosition::Center(x, y) => (x - query.width / 2, y - query.height / 2),
+            TextPosition::TopRight(x, y) => (x - query.width, y),
+        };
         let rect = sdl2::rect::Rect::new(
             top_left.0 as i32,
             top_left.1 as i32,

@@ -8,13 +8,13 @@ mod geometry;
 mod graphics;
 
 use control_state::ControlState;
-use game_state::GameState;
+use game_state::{GameState, PlayingGameState};
 use geometry::Rect;
-use graphics::{FontType, Graphics};
+use graphics::{FontType, Graphics, TextPosition};
 
 use ecs::components::{IsPlayer, Position, RenderKind};
 use sdl2::pixels::Color;
-use specs::{Dispatcher, Join, ReadStorage, World, WorldExt};
+use specs::{Dispatcher, Join, Read, ReadStorage, World, WorldExt};
 
 #[derive(Default)]
 pub struct Arena(Rect);
@@ -54,12 +54,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         state = match state {
             GameState::Idle { button_pressed } => {
                 let state = idle(button_pressed, control_state, &mut graphics)?;
-                if let GameState::Playing = state {
+                if let GameState::Playing { .. } = state {
                     ecs::initialize_world(&mut world, graphics.entity_sizes()?)?;
                 }
                 state
             }
-            GameState::Playing => play(
+            GameState::Playing { state } => play(
+                state,
                 &mut world,
                 &mut dispatcher,
                 control_state,
@@ -83,7 +84,7 @@ fn game_over(
 ) -> Result<GameState, Box<dyn Error>> {
     graphics.draw_text(
         "Game Over",
-        (600, 300),
+        TextPosition::Center(600, 300),
         Color::RGBA(255, 0, 0, 0),
         FontType::Title,
     )?;
@@ -107,13 +108,13 @@ fn idle(
 ) -> Result<GameState, Box<dyn Error>> {
     graphics.draw_text(
         "Rideways",
-        (600, 300),
+        TextPosition::Center(600, 300),
         Color::RGBA(255, 0, 0, 0),
         FontType::Title,
     )?;
     graphics.draw_text(
         "Press fire to play",
-        (600, 500),
+        TextPosition::Center(600, 500),
         Color::RGBA(255, 0, 0, 0),
         FontType::Info,
     )?;
@@ -122,7 +123,9 @@ fn idle(
             button_pressed: true,
         }
     } else if button_pressed {
-        GameState::Playing
+        GameState::Playing {
+            state: PlayingGameState::new(),
+        }
     } else {
         GameState::Idle { button_pressed }
     };
@@ -130,14 +133,23 @@ fn idle(
 }
 
 fn play(
+    state: PlayingGameState,
     world: &mut World,
     dispatcher: &mut Dispatcher,
     control_state: ControlState,
     delta_time: f64,
     graphics: &mut Graphics,
 ) -> Result<GameState, Box<dyn Error>> {
+    let score_text = format!("Score: {}", state.score);
+    graphics.draw_text(
+        &score_text,
+        TextPosition::TopRight(1200, 0),
+        Color::RGB(255, 255, 255),
+        FontType::Info,
+    )?;
     world.insert(control_state);
     world.insert(ElapsedSeconds(delta_time as f32));
+    world.insert(state);
     world.maintain();
 
     dispatcher.dispatch(&world);
@@ -147,10 +159,12 @@ fn play(
         graphics.draw_sprite(position, render_kind)?;
     }
 
+    let new_state: (Read<'_, PlayingGameState>) = world.system_data();
+
     let is_player: ReadStorage<IsPlayer> = world.system_data();
     if is_player.is_empty() {
         Ok(GameState::GameOver { seconds_left: 2.0 })
     } else {
-        Ok(GameState::Playing)
+        Ok(GameState::Playing { state: *new_state })
     }
 }

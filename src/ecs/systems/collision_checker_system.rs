@@ -2,13 +2,16 @@ use crate::ecs::components::{
     HarmsAliens, HarmsPlayer, IsAlien, IsPlayer, Lifetime, Position, SpawnerKind,
 };
 use crate::geometry::Rect;
-use specs::{Entities, ReadStorage, System, WriteStorage};
+use crate::PlayingGameState;
+
+use specs::{Entities, ReadStorage, System, Write, WriteStorage};
 
 pub struct CollisionChecker;
 
 impl<'a> System<'a> for CollisionChecker {
     type SystemData = (
         Entities<'a>,
+        Write<'a, PlayingGameState>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, SpawnerKind>,
         WriteStorage<'a, Lifetime>,
@@ -22,6 +25,7 @@ impl<'a> System<'a> for CollisionChecker {
         &mut self,
         (
             entities,
+            mut active_game_state,
             mut position,
             mut spawner_kind,
             mut lifetime,
@@ -39,6 +43,7 @@ impl<'a> System<'a> for CollisionChecker {
                     let _res = entities.delete(alient_ent);
                     let _res = entities.delete(harmer_ent);
                     explosion_positions.push((alien_pos.rect.left(), alien_pos.rect.top()));
+                    active_game_state.score += 1;
                 }
             }
         }
