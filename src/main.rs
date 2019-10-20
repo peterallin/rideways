@@ -1,3 +1,4 @@
+// TODO: Get rid of the magic numbers
 use std::error::Error;
 
 mod control_state;
@@ -12,9 +13,9 @@ use game_state::{GameState, PlayingGameState};
 use geometry::Rect;
 use graphics::{FontType, Graphics, TextPosition};
 
-use ecs::components::{IsPlayer, Position, RenderKind};
+use crate::ecs::components::{Invincibility, IsPlayer, KeepInside, Position, RenderKind, Velocity};
 use sdl2::pixels::Color;
-use specs::{Dispatcher, Join, Read, ReadStorage, World, WorldExt};
+use specs::{Builder, Dispatcher, Join, ReadStorage, World, WorldExt};
 
 #[derive(Default)]
 pub struct Arena(Rect);
@@ -55,7 +56,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             GameState::Idle { button_pressed } => {
                 let state = idle(button_pressed, control_state, &mut graphics)?;
                 if let GameState::Playing { .. } = state {
-                    ecs::initialize_world(&mut world, graphics.entity_sizes()?)?;
+                    ecs::initialize_world(&mut world);
                 }
                 state
             }
@@ -140,9 +141,9 @@ fn play(
     delta_time: f64,
     graphics: &mut Graphics,
 ) -> Result<GameState, Box<dyn Error>> {
-    let score_text = format!("Score: {}", state.score);
+    let status_text = format!("Lives: {}   Score: {}", state.lives_left, state.score);
     graphics.draw_text(
-        &score_text,
+        &status_text,
         TextPosition::TopRight(1200, 0),
         Color::RGB(255, 255, 255),
         FontType::Info,
@@ -153,18 +154,38 @@ fn play(
     world.maintain();
 
     dispatcher.dispatch(&world);
+    draw_sprites(&world, graphics)?;
+
+    let mut state = ecs::get_playing_state(&world);
+    let is_player_dead = ecs::is_player_dead(&world);
+
+    if is_player_dead && !state.any_lives_left() {
+        Ok(GameState::GameOver { seconds_left: 2.0 })
+    } else {
+        if is_player_dead {
+            state.one_dead();
+            // TODO: Add some pause after the player has been killed before inserting a new player
+            world
+                .create_entity()
+                .with(Position {
+                    rect: Rect::new((0, 300).into(), graphics.entity_sizes()?.player_size.into()),
+                })
+                .with(Velocity { x: 0.0, y: 0.0 })
+                .with(RenderKind::PlayerGhost)
+                .with(IsPlayer)
+                .with(KeepInside)
+                .with(Invincibility { seconds_left: 5.0 })
+                .build();
+        }
+        Ok(GameState::Playing { state })
+    }
+}
+
+fn draw_sprites(world: &World, graphics: &mut Graphics<'_>) -> Result<(), Box<dyn Error>> {
     type RenderSystemData<'a> = (ReadStorage<'a, Position>, ReadStorage<'a, RenderKind>);
     let (positions, render_kinds): RenderSystemData = world.system_data();
     for (position, render_kind) in (&positions, &render_kinds).join() {
         graphics.draw_sprite(position, render_kind)?;
     }
-
-    let new_state: (Read<'_, PlayingGameState>) = world.system_data();
-
-    let is_player: ReadStorage<IsPlayer> = world.system_data();
-    if is_player.is_empty() {
-        Ok(GameState::GameOver { seconds_left: 2.0 })
-    } else {
-        Ok(GameState::Playing { state: *new_state })
-    }
+    Ok(())
 }

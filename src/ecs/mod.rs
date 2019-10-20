@@ -3,6 +3,7 @@ mod systems {
     pub mod collision_checker_system;
     pub mod enemy_spawning_system;
     pub mod force_inside_system;
+    pub mod invincibility_watching_system;
     pub mod lifetime_watching_system;
     pub mod non_player_control_system;
     pub mod player_control_system;
@@ -15,6 +16,7 @@ mod systems {
 pub mod components {
     pub mod harms_aliens;
     pub mod harms_player;
+    pub mod invincibility;
     pub mod is_alien;
     pub mod is_player;
     pub mod keep_inside;
@@ -28,6 +30,7 @@ pub mod components {
 
     pub use harms_aliens::HarmsAliens;
     pub use harms_player::HarmsPlayer;
+    pub use invincibility::Invincibility;
     pub use is_alien::IsAlien;
     pub use is_player::IsPlayer;
     pub use keep_inside::KeepInside;
@@ -43,3 +46,7 @@ pub mod components {
 mod setup;
 pub use setup::initialize_world;
 pub use setup::setup;
+
+mod world_queries;
+pub use world_queries::get_playing_state;
+pub use world_queries::is_player_dead;

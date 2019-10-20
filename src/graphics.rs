@@ -166,6 +166,12 @@ impl<'a> Renderer<'a> {
             BlendMode::Blend,
         )?;
         renderer.load_texture(
+            RenderKind::PlayerGhost,
+            "player_ghost.png",
+            texture_creator,
+            BlendMode::Blend,
+        )?;
+        renderer.load_texture(
             RenderKind::BasicShot,
             "basic_shot.png",
             texture_creator,

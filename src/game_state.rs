@@ -16,10 +16,22 @@ impl GameState {
 #[derive(Default, Copy, Clone)]
 pub struct PlayingGameState {
     pub score: u32,
+    pub lives_left: i32,
 }
 
 impl PlayingGameState {
     pub fn new() -> PlayingGameState {
-        PlayingGameState { score: 0 }
+        PlayingGameState {
+            score: 0,
+            lives_left: 3,
+        }
+    }
+
+    pub fn any_lives_left(&self) -> bool {
+        self.lives_left > 0
+    }
+
+    pub fn one_dead(&mut self) {
+        self.lives_left -= 1;
     }
 }
