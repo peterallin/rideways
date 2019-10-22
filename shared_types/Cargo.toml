@@ -1,0 +1,9 @@
+[package]
+name = "shared_types"
+version = "0.1.0"
+authors = ["Peter Allin <peter@peca.dk>"]
+edition = "2018"
+
+
+[dependencies]
+geometry = { path = "../geometry" }

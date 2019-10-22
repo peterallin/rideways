@@ -1,0 +1,11 @@
+[package]
+name = "ecs_components"
+version = "0.1.0"
+authors = ["Peter Allin <peter@peca.dk>"]
+edition = "2018"
+
+[dependencies]
+specs = "0.15"
+specs-derive = "0.4"
+geometry = { path = "../geometry" }
+shared_types = { path = "../shared_types" }

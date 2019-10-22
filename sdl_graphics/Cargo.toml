@@ -1,0 +1,10 @@
+[package]
+name = "sdl_graphics"
+version = "0.1.0"
+authors = ["Peter Allin <peter@peca.dk>"]
+edition = "2018"
+
+[dependencies]
+sdl2 = { version = "0.32", features = ["ttf","image","gfx","mixer"] }
+ecs_components = { path = "../ecs_components" }
+shared_types = { path = "../shared_types" }

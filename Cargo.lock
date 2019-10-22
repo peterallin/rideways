@@ -100,6 +100,39 @@ dependencies = [
 ]
 
 [[package]]
+name = "ecs_components"
+version = "0.1.0"
+dependencies = [
+ "geometry 0.1.0",
+ "shared_types 0.1.0",
+ "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "specs-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "ecs_setup"
+version = "0.1.0"
+dependencies = [
+ "ecs_components 0.1.0",
+ "ecs_systems 0.1.0",
+ "shared_types 0.1.0",
+ "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "ecs_systems"
+version = "0.1.0"
+dependencies = [
+ "ecs_components 0.1.0",
+ "geometry 0.1.0",
+ "rand 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_core 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sdl_input 0.1.0",
+ "shared_types 0.1.0",
+ "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "either"
 version = "1.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -108,6 +141,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "fuchsia-cprng"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "geometry"
+version = "0.1.0"
+dependencies = [
+ "rand 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand_core 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "specs-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.42 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "getrandom"
@@ -149,6 +194,21 @@ version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cfg-if 0.1.9 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "main"
+version = "0.1.0"
+dependencies = [
+ "ecs_components 0.1.0",
+ "ecs_setup 0.1.0",
+ "geometry 0.1.0",
+ "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "sdl_graphics 0.1.0",
+ "sdl_input 0.1.0",
+ "shared_types 0.1.0",
+ "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.42 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
@@ -409,18 +469,6 @@ version = "0.1.56"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
-name = "rideways"
-version = "0.1.0"
-dependencies = [
- "rand 0.7.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "rand_core 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
- "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
- "specs 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "specs-derive 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "time 0.1.42 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
 name = "rustc_version"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -457,6 +505,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "sdl_graphics"
+version = "0.1.0"
+dependencies = [
+ "ecs_components 0.1.0",
+ "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
+ "shared_types 0.1.0",
+]
+
+[[package]]
+name = "sdl_input"
+version = "0.1.0"
+dependencies = [
+ "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
 name = "semver"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -468,6 +532,13 @@ dependencies = [
 name = "semver-parser"
 version = "0.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "shared_types"
+version = "0.1.0"
+dependencies = [
+ "geometry 0.1.0",
+]
 
 [[package]]
 name = "shred"
