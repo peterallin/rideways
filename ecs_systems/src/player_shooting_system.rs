@@ -1,6 +1,4 @@
-use ecs_components::{
-    HarmsAliens, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity,
-};
+use ecs_components::{HarmsAliens, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity};
 use geometry::Rect;
 use sdl_input::ControlState;
 use specs::{Entities, Read, ReadStorage, System, WriteStorage};

@@ -1,12 +1,10 @@
 // TODO: Get rid of the magic numbers
 use std::error::Error;
 
-mod graphics;
-
-use sdl_input::ControlState;
-use shared_types::{Arena, ElapsedSeconds, GameState, PlayingGameState};
 use geometry::Rect;
 use sdl_graphics::{FontType, Graphics, TextPosition};
+use sdl_input::ControlState;
+use shared_types::{Arena, ElapsedSeconds, GameState, PlayingGameState};
 
 use ecs_components::{Invincibility, IsPlayer, KeepInside, Position, RenderKind, Velocity};
 use sdl2::pixels::Color;

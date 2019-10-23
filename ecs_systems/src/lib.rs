@@ -11,11 +11,10 @@ mod reap_outsiders_system;
 mod spawner_spawning_system;
 mod update_pos_system;
 
-
-pub use force_inside_system::ForceInside;
 pub use alien_shooting_system::AlienShooting;
 pub use collision_checker_system::CollisionChecker;
 pub use enemy_spawning_system::EnemySpawning;
+pub use force_inside_system::ForceInside;
 pub use invincibility_watching_system::InvincibilityWatching;
 pub use lifetime_watching_system::LifetimeWatching;
 pub use non_player_control_system::NonPlayerControl;

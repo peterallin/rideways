@@ -1,7 +1,7 @@
 use ecs_components::{IsAlien, MovementKind, Position, RenderKind, Velocity};
 use geometry::{Rect, RectSize};
-use shared_types::Arena;
 use rand::Rng;
+use shared_types::Arena;
 use specs::{Entities, Read, System, WriteStorage};
 
 pub struct EnemySpawning {
