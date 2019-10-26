@@ -1,3 +1,4 @@
+mod draw;
 mod harms_aliens;
 mod harms_player;
 mod invincibility;
@@ -8,11 +9,12 @@ mod lifetime;
 mod movement_kind;
 mod position;
 mod reap_when_outside;
-mod render_kind;
 mod spawner_kind;
+mod sprite;
 mod velocity;
 mod world_queries;
 
+pub use draw::Draw;
 pub use harms_aliens::HarmsAliens;
 pub use harms_player::HarmsPlayer;
 pub use invincibility::Invincibility;
@@ -23,7 +25,7 @@ pub use lifetime::Lifetime;
 pub use movement_kind::MovementKind;
 pub use position::Position;
 pub use reap_when_outside::ReapWhenOutside;
-pub use render_kind::RenderKind;
 pub use spawner_kind::SpawnerKind;
+pub use sprite::Sprite;
 pub use velocity::Velocity;
 pub use world_queries::{get_playing_state, is_player_dead};

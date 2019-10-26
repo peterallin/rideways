@@ -1,4 +1,4 @@
-use ecs_components::{IsAlien, MovementKind, Position, RenderKind, Velocity};
+use ecs_components::{IsAlien, MovementKind, Position, Sprite, Velocity};
 use geometry::{Rect, RectSize};
 use rand::Rng;
 use shared_types::Arena;
@@ -21,7 +21,7 @@ impl<'a> System<'a> for EnemySpawning {
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, MovementKind>,
-        WriteStorage<'a, RenderKind>,
+        WriteStorage<'a, Sprite>,
         WriteStorage<'a, IsAlien>,
     );
 
@@ -33,7 +33,7 @@ impl<'a> System<'a> for EnemySpawning {
             mut position,
             mut velocity,
             mut movement_kind,
-            mut render_kind,
+            mut sprite,
             mut is_alien,
         ): Self::SystemData,
     ) {
@@ -59,7 +59,7 @@ impl<'a> System<'a> for EnemySpawning {
                     &mut velocity,
                 )
                 .with(MovementKind::SideToSide, &mut movement_kind)
-                .with(RenderKind::UFO, &mut render_kind)
+                .with(Sprite::UFO, &mut sprite)
                 .with(IsAlien, &mut is_alien)
                 .build();
         }

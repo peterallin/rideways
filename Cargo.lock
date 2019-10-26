@@ -202,6 +202,7 @@ version = "0.1.0"
 dependencies = [
  "ecs_components 0.1.0",
  "ecs_setup 0.1.0",
+ "ecs_systems 0.1.0",
  "geometry 0.1.0",
  "sdl2 0.32.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "sdl_graphics 0.1.0",

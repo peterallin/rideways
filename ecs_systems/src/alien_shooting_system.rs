@@ -1,6 +1,4 @@
-use ecs_components::{
-    HarmsPlayer, IsAlien, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity,
-};
+use ecs_components::{HarmsPlayer, IsAlien, IsPlayer, Position, ReapWhenOutside, Sprite, Velocity};
 use geometry::{Rect, RectSize};
 use rand::Rng;
 use specs::{Entities, ReadStorage, System, WriteStorage};
@@ -20,7 +18,7 @@ impl<'a> System<'a> for AlienShooting {
         Entities<'a>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
-        WriteStorage<'a, RenderKind>,
+        WriteStorage<'a, Sprite>,
         WriteStorage<'a, ReapWhenOutside>,
         WriteStorage<'a, HarmsPlayer>,
         ReadStorage<'a, IsAlien>,
@@ -33,7 +31,7 @@ impl<'a> System<'a> for AlienShooting {
             entities,
             mut position,
             mut velocity,
-            mut render_kind,
+            mut sprite,
             mut reap_when_outside,
             mut harms_player,
             is_alien,
@@ -71,7 +69,7 @@ impl<'a> System<'a> for AlienShooting {
                         &mut position,
                     )
                     .with(Velocity { x: vel.0, y: vel.1 }, &mut velocity)
-                    .with(RenderKind::UFOShot, &mut render_kind)
+                    .with(Sprite::UFOShot, &mut sprite)
                     .with(ReapWhenOutside, &mut reap_when_outside)
                     .with(HarmsPlayer, &mut harms_player)
                     .build();

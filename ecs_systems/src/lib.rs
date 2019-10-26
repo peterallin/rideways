@@ -9,6 +9,7 @@ mod player_control_system;
 mod player_shooting_system;
 mod reap_outsiders_system;
 mod spawner_spawning_system;
+mod star_spawner_system;
 mod update_pos_system;
 
 pub use alien_shooting_system::AlienShooting;
@@ -22,4 +23,5 @@ pub use player_control_system::PlayerControl;
 pub use player_shooting_system::PlayerShooting;
 pub use reap_outsiders_system::ReapOutsiders;
 pub use spawner_spawning_system::SpawnerSpawning;
+pub use star_spawner_system::StarSpawner;
 pub use update_pos_system::UpdatePos;

@@ -4,10 +4,14 @@ version = "0.1.0"
 authors = ["Peter Allin <peter@peca.dk>"]
 edition = "2018"
 
+[[bin]]
+name="rideways"
+path="src/main.rs"
 
 [dependencies]
 ecs_setup = { path = "../ecs_setup" }
 ecs_components = { path = "../ecs_components" }
+ecs_systems = { path = "../ecs_systems" }
 sdl_input = { path = "../sdl_input" }
 sdl_graphics = { path = "../sdl_graphics" }
 shared_types = { path = "../shared_types"}

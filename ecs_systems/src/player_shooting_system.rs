@@ -1,4 +1,4 @@
-use ecs_components::{HarmsAliens, IsPlayer, Position, ReapWhenOutside, RenderKind, Velocity};
+use ecs_components::{HarmsAliens, IsPlayer, Position, ReapWhenOutside, Sprite, Velocity};
 use geometry::Rect;
 use sdl_input::ControlState;
 use specs::{Entities, Read, ReadStorage, System, WriteStorage};
@@ -23,7 +23,7 @@ impl<'a> System<'a> for PlayerShooting {
         Entities<'a>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
-        WriteStorage<'a, RenderKind>,
+        WriteStorage<'a, Sprite>,
         WriteStorage<'a, ReapWhenOutside>,
         WriteStorage<'a, HarmsAliens>,
         ReadStorage<'a, IsPlayer>,
@@ -36,7 +36,7 @@ impl<'a> System<'a> for PlayerShooting {
             entities,
             mut position,
             mut velocity,
-            mut render_kind,
+            mut sprite,
             mut reap_when_outside,
             mut harms_aliens,
             is_player,
@@ -64,7 +64,7 @@ impl<'a> System<'a> for PlayerShooting {
                     &mut position,
                 )
                 .with(Velocity { x: 1500.0, y: 0.0 }, &mut velocity)
-                .with(RenderKind::BasicShot, &mut render_kind)
+                .with(Sprite::BasicShot, &mut sprite)
                 .with(ReapWhenOutside, &mut reap_when_outside)
                 .with(HarmsAliens, &mut harms_aliens)
                 .build();

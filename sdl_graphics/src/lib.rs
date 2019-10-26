@@ -1,6 +1,7 @@
 use std::collections::btree_map::BTreeMap;
 use std::error::Error;
 
+use sdl2::gfx::primitives::DrawRenderer;
 use sdl2::image::LoadTexture;
 use sdl2::pixels::Color;
 use sdl2::render::{BlendMode, Texture, TextureCreator};
@@ -8,11 +9,11 @@ use sdl2::ttf::Font;
 use sdl2::video::WindowContext;
 use sdl2::EventPump;
 
-use ecs_components::RenderKind;
+use ecs_components::Sprite;
 use shared_types::EntitySizes;
 
 type Canvas = sdl2::render::Canvas<sdl2::video::Window>;
-type Map<'a> = BTreeMap<RenderKind, (Texture<'a>, (u32, u32))>;
+type Map<'a> = BTreeMap<Sprite, (Texture<'a>, (u32, u32))>;
 
 pub enum TextPosition {
     Center(u32, u32),
@@ -96,6 +97,7 @@ impl<'a> Graphics<'a> {
     }
 
     pub fn clear(&mut self) {
+        self.renderer.canvas.set_draw_color(Color::RGB(0, 0, 0));
         self.renderer.canvas.clear();
     }
 
@@ -103,12 +105,33 @@ impl<'a> Graphics<'a> {
         self.renderer.present();
     }
 
+    pub fn draw_circle(&mut self, x: f32, y: f32, radius: i16) {
+        let _ = self.renderer.canvas.filled_circle(
+            x as i16,
+            y as i16,
+            radius,
+            Color::RGB(150, 200, 200),
+        );
+    }
+
+    // This function is a hack to avoid what I believe to be a bug in SDL2. When
+    // on of the SDL2_gfx functions are used before copying textures onto screen,
+    // a small artifact from the last color used with the SDL2_gfx functions sometimes
+    // appear on the lower right corner of the first texture being copied. By drawing
+    // a small black circle, I make this artifact black and thus invisble in this game.
+    pub fn back_to_black(&mut self) {
+        let _ = self
+            .renderer
+            .canvas
+            .filled_circle(2, 2, 2, Color::RGB(0, 0, 0));
+    }
+
     pub fn draw_sprite(
         &mut self,
         target: &ecs_components::Position,
-        render_kind: &RenderKind,
+        sprite: &Sprite,
     ) -> Result<(), Box<dyn Error>> {
-        self.renderer.render(target, render_kind)
+        self.renderer.render(target, sprite)
     }
 
     pub fn draw_text(
@@ -153,48 +176,38 @@ impl<'a> Renderer<'a> {
     ) -> Result<Renderer<'a>, Box<dyn Error>> {
         let map = Map::new();
         let mut renderer = Renderer { map, canvas };
+        renderer.load_texture(Sprite::UFO, "ufo.png", texture_creator, BlendMode::Blend)?;
         renderer.load_texture(
-            RenderKind::UFO,
-            "ufo.png",
-            texture_creator,
-            BlendMode::Blend,
-        )?;
-        renderer.load_texture(
-            RenderKind::Player,
+            Sprite::Player,
             "player.png",
             texture_creator,
             BlendMode::Blend,
         )?;
         renderer.load_texture(
-            RenderKind::PlayerGhost,
+            Sprite::PlayerGhost,
             "player_ghost.png",
             texture_creator,
             BlendMode::Blend,
         )?;
         renderer.load_texture(
-            RenderKind::BasicShot,
+            Sprite::BasicShot,
             "basic_shot.png",
             texture_creator,
             BlendMode::Blend,
         )?;
         renderer.load_texture(
-            RenderKind::UFOShot,
+            Sprite::UFOShot,
             "ufo_shot.png",
             texture_creator,
             BlendMode::Blend,
         )?;
-        renderer.load_texture(
-            RenderKind::Glow,
-            "glow.png",
-            texture_creator,
-            BlendMode::Add,
-        )?;
+        renderer.load_texture(Sprite::Glow, "glow.png", texture_creator, BlendMode::Add)?;
         Ok(renderer)
     }
 
     fn load_texture(
         &mut self,
-        kind: RenderKind,
+        sprite: Sprite,
         filename: &str,
         texture_creator: &'a TextureCreator<WindowContext>,
         blend_mode: BlendMode,
@@ -203,27 +216,28 @@ impl<'a> Renderer<'a> {
         texture.set_blend_mode(blend_mode);
         let query = texture.query();
         let size = (query.width, query.height);
-        self.map.insert(kind, (texture, size));
+        self.map.insert(sprite, (texture, size));
         Ok(())
     }
 
     pub fn render(
         &mut self,
         position: &ecs_components::Position,
-        render_kind: &ecs_components::RenderKind,
+        sprite: &ecs_components::Sprite,
     ) -> Result<(), Box<dyn Error>> {
         let render_info = self
             .map
-            .get(render_kind)
-            .ok_or_else(|| format!("Failed to get render info for {:?}", render_kind))?;
-        let render_size = render_info.1;
+            .get(sprite)
+            .ok_or_else(|| format!("Failed to get render info for {:?}", sprite))?;
+        let texture = &render_info.0;
+        let size = render_info.1;
         let dest_rect = sdl2::rect::Rect::new(
             position.rect.left() as i32,
             position.rect.top() as i32,
-            render_size.0,
-            render_size.1,
+            size.0,
+            size.1,
         );
-        self.canvas.copy(&render_info.0, None, dest_rect)?;
+        self.canvas.copy(&texture, None, dest_rect)?;
         Ok(())
     }
 
@@ -232,19 +246,23 @@ impl<'a> Renderer<'a> {
     }
 
     pub fn entity_sizes(&self) -> Result<EntitySizes, Box<dyn Error>> {
-        let ufo_size = self.map.get(&RenderKind::UFO).ok_or("No UFO")?.1;
-        let player_size = self.map.get(&RenderKind::Player).ok_or("No player")?.1;
-        let basic_shot_size = self
-            .map
-            .get(&RenderKind::BasicShot)
-            .ok_or("No basic shot")?
-            .1;
-        let ufo_shot_size = self.map.get(&RenderKind::UFOShot).ok_or("No UFO shot")?.1;
+        let ufo_size = self.get_texture_size(Sprite::UFO)?;
+        let player_size = self.get_texture_size(Sprite::Player)?;
+        let basic_shot_size = self.get_texture_size(Sprite::BasicShot)?;
+        let ufo_shot_size = self.get_texture_size(Sprite::UFOShot)?;
         Ok(EntitySizes {
             ufo_size,
             player_size,
             basic_shot_size,
             ufo_shot_size,
         })
+    }
+
+    fn get_texture_size(&self, sprite: Sprite) -> Result<(u32, u32), String> {
+        let render_info = &self
+            .map
+            .get(&sprite)
+            .ok_or(format!("Missing render info for {:?}", sprite))?;
+        Ok(render_info.1)
     }
 }

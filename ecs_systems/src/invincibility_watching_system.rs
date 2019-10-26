@@ -1,4 +1,4 @@
-use ecs_components::{Invincibility, RenderKind};
+use ecs_components::{Invincibility, Sprite};
 use shared_types::ElapsedSeconds;
 use specs::{Entities, LazyUpdate, Read, System, WriteStorage};
 
@@ -18,8 +18,8 @@ impl<'a> System<'a> for InvincibilityWatching {
             invincibility.seconds_left -= delta_time.0;
             if invincibility.seconds_left <= 0.0 {
                 updater.remove::<Invincibility>(entity);
-                updater.remove::<RenderKind>(entity);
-                updater.insert(entity, RenderKind::Player);
+                updater.remove::<Sprite>(entity);
+                updater.insert(entity, Sprite::Player);
             }
         }
     }

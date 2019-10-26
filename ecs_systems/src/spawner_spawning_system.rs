@@ -1,4 +1,4 @@
-use ecs_components::{Lifetime, Position, RenderKind, SpawnerKind, Velocity};
+use ecs_components::{Lifetime, Position, SpawnerKind, Sprite, Velocity};
 use geometry::Rect;
 use rand::Rng;
 use specs::{Entities, ReadStorage, System, WriteStorage};
@@ -11,7 +11,7 @@ impl<'a> System<'a> for SpawnerSpawning {
         ReadStorage<'a, SpawnerKind>,
         WriteStorage<'a, Position>,
         WriteStorage<'a, Velocity>,
-        WriteStorage<'a, RenderKind>,
+        WriteStorage<'a, Sprite>,
         WriteStorage<'a, Lifetime>,
     );
 
@@ -22,7 +22,7 @@ impl<'a> System<'a> for SpawnerSpawning {
             spawner_kind,
             mut position,
             mut velocity,
-            mut render_kind,
+            mut sprite,
             mut lifetime,
         ): Self::SystemData,
     ) {
@@ -44,7 +44,7 @@ impl<'a> System<'a> for SpawnerSpawning {
                     let velocity_y = -speed * direction.sin();
                     entities
                         .build_entity()
-                        .with(RenderKind::Glow, &mut render_kind)
+                        .with(Sprite::Glow, &mut sprite)
                         .with(
                             Position {
                                 rect: Rect::new(pos, (1, 1).into()),
