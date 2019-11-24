@@ -15,8 +15,8 @@ use ecs_systems::StarSpawner;
 use ecs_systems::UpdatePos;
 
 use ecs_components::{
-    Draw, HarmsAliens, HarmsPlayer, Invincibility, IsAlien, IsPlayer, KeepInside, Lifetime,
-    MovementKind, Position, ReapWhenOutside, SpawnerKind, Sprite, Velocity,
+    Draw, HarmsAliens, HarmsPlayer, Invincibility, IsAlien, IsExplosion, IsPlayer, KeepInside,
+    Lifetime, MovementKind, Position, ReapWhenOutside, SpawnerKind, Sprite, Velocity,
 };
 use shared_types::{ElapsedSeconds, EntitySizes, PlayingGameState};
 use specs::world::WorldExt;
@@ -30,6 +30,7 @@ pub fn setup<'a>(entity_sizes: EntitySizes) -> Result<(World, Dispatcher<'a, 'a>
     world.register::<HarmsPlayer>();
     world.register::<Invincibility>();
     world.register::<IsAlien>();
+    world.register::<IsExplosion>();
     world.register::<IsPlayer>();
     world.register::<KeepInside>();
     world.register::<Lifetime>();

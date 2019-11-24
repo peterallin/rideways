@@ -1,4 +1,4 @@
-use ecs_components::{Lifetime, Position, SpawnerKind, Sprite, Velocity};
+use ecs_components::{IsExplosion, Lifetime, Position, SpawnerKind, Sprite, Velocity};
 use geometry::Rect;
 use rand::Rng;
 use specs::{Entities, ReadStorage, System, WriteStorage};
@@ -13,6 +13,7 @@ impl<'a> System<'a> for SpawnerSpawning {
         WriteStorage<'a, Velocity>,
         WriteStorage<'a, Sprite>,
         WriteStorage<'a, Lifetime>,
+        WriteStorage<'a, IsExplosion>,
     );
 
     fn run(
@@ -24,6 +25,7 @@ impl<'a> System<'a> for SpawnerSpawning {
             mut velocity,
             mut sprite,
             mut lifetime,
+            mut is_explosion,
         ): Self::SystemData,
     ) {
         use specs::Join;
@@ -37,7 +39,7 @@ impl<'a> System<'a> for SpawnerSpawning {
 
         for (kind, pos) in spawns {
             match kind {
-                SpawnerKind::Fire => {
+                SpawnerKind::Fire(glow_lifetime) => {
                     let speed = rng.gen_range(100, 400) as f32;
                     let direction = rng.gen_range(0, 360) as f32 / 180.0 * std::f32::consts::PI;
                     let velocity_x = speed * direction.cos();
@@ -58,7 +60,13 @@ impl<'a> System<'a> for SpawnerSpawning {
                             },
                             &mut velocity,
                         )
-                        .with(Lifetime { seconds: 0.2 }, &mut lifetime)
+                        .with(
+                            Lifetime {
+                                seconds: *glow_lifetime,
+                            },
+                            &mut lifetime,
+                        )
+                        .with(IsExplosion, &mut is_explosion)
                         .build();
                     {}
                 }
