@@ -57,7 +57,7 @@ impl<'a> Graphics<'a> {
         contexts: &'a Contexts,
         texture_creator: &'a TextureCreator<WindowContext>,
     ) -> Result<Graphics<'a>, Box<dyn Error>> {
-        let renderer = Renderer::new(window.canvas, &texture_creator)?;
+        let renderer = Renderer::new(window.canvas, texture_creator)?;
 
         // TODO: Find a way to locate font files
         let title_font = contexts
@@ -237,7 +237,7 @@ impl<'a> Renderer<'a> {
             size.0,
             size.1,
         );
-        self.canvas.copy(&texture, None, dest_rect)?;
+        self.canvas.copy(texture, None, dest_rect)?;
         Ok(())
     }
 

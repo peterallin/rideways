@@ -88,7 +88,7 @@ pub fn initialize_world(world: &mut World) {
     for _ in 0..3000 {
         world.insert(ElapsedSeconds(0.016));
         world.insert(PlayingGameState::new());
-        star_spawner.run_now(&world);
-        update_position.run_now(&world);
+        star_spawner.run_now(world);
+        update_position.run_now(world);
     }
 }

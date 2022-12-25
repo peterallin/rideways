@@ -24,6 +24,12 @@ impl GameState {
     }
 }
 
+impl Default for GameState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[derive(Default, Copy, Clone)]
 pub struct PlayingGameState {
     pub score: u32,

@@ -143,12 +143,12 @@ fn play(
     world.insert(state);
     world.maintain();
 
-    dispatcher.dispatch(&world);
-    draw_world(&world, graphics)?;
+    dispatcher.dispatch(world);
+    draw_world(world, graphics)?;
 
-    let mut state = ecs_components::get_playing_state(&world);
-    let is_player_dead = ecs_components::is_player_dead(&world);
-    let all_explosions_gone = ecs_components::all_explosions_gone(&world);
+    let mut state = ecs_components::get_playing_state(world);
+    let is_player_dead = ecs_components::is_player_dead(world);
+    let all_explosions_gone = ecs_components::all_explosions_gone(world);
 
     if is_player_dead && all_explosions_gone && !state.any_lives_left() {
         Ok(GameState::GameOver { seconds_left: 2.0 })

@@ -14,7 +14,7 @@ impl<'a> System<'a> for LifetimeWatching {
     fn run(&mut self, (entities, delta_time, mut lifetime): Self::SystemData) {
         use specs::Join;
         for (entity, mut lifetime) in (&entities, &mut lifetime).join() {
-            lifetime.seconds = lifetime.seconds - delta_time.0;
+            lifetime.seconds -= delta_time.0;
             if lifetime.seconds <= 0.0 {
                 let _ = entities.delete(entity);
             }

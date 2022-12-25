@@ -48,7 +48,7 @@ impl<'a> System<'a> for AlienShooting {
             }
         }
 
-        let player_pos = (&mut position, &is_player).join().nth(0).map(|x| *x.0);
+        let player_pos = (&mut position, &is_player).join().next().map(|x| *x.0);
 
         if let Some(player_pos) = player_pos {
             for pos in fire_positions {

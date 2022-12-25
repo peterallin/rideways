@@ -31,7 +31,7 @@ impl<'a> System<'a> for NonPlayerControl {
         use specs::Join;
         for (kind, pos, vel) in (&kind, &pos, &mut vel).join() {
             match kind {
-                MovementKind::SideToSide => control_ufo(pos, vel, &*arena),
+                MovementKind::SideToSide => control_ufo(pos, vel, &arena),
             }
         }
     }
