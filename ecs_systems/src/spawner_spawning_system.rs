@@ -40,8 +40,8 @@ impl<'a> System<'a> for SpawnerSpawning {
         for (kind, pos) in spawns {
             match kind {
                 SpawnerKind::Fire(glow_lifetime) => {
-                    let speed = rng.gen_range(100, 400) as f32;
-                    let direction = rng.gen_range(0, 360) as f32 / 180.0 * std::f32::consts::PI;
+                    let speed = rng.gen_range(100..400) as f32;
+                    let direction = rng.gen_range(0..360) as f32 / 180.0 * std::f32::consts::PI;
                     let velocity_x = speed * direction.cos();
                     let velocity_y = -speed * direction.sin();
                     entities

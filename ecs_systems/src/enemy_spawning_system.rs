@@ -39,9 +39,9 @@ impl<'a> System<'a> for EnemySpawning {
     ) {
         let arena_rect = arena.0;
         let mut rng = rand::thread_rng();
-        if rng.gen_range(0, 10000) > 9900 {
+        if rng.gen_range(0..10000) > 9900 {
             let x = arena_rect.right() + 100.0;
-            let y = rng.gen_range(arena_rect.top(), arena_rect.bottom() - self.ufo_size.1);
+            let y = rng.gen_range(arena_rect.top()..(arena_rect.bottom() - self.ufo_size.1));
             let pos = (x, y).into();
             entities
                 .build_entity()
@@ -53,8 +53,8 @@ impl<'a> System<'a> for EnemySpawning {
                 )
                 .with(
                     Velocity {
-                        x: rng.gen_range(-600.0, -200.0),
-                        y: rng.gen_range(-35.0, 35.0),
+                        x: rng.gen_range(-600.0..-200.0),
+                        y: rng.gen_range(-35.0..35.0),
                     },
                     &mut velocity,
                 )

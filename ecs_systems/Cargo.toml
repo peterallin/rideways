@@ -5,9 +5,9 @@ authors = ["Peter Allin <peter@peca.dk>"]
 edition = "2018"
 
 [dependencies]
-specs = "0.15"
-rand = "0.7"
-rand_core="0.5"
+specs = "0.18"
+rand = "0.8"
+rand_core="0.6"
 geometry = { path = "../geometry" }
 shared_types = { path = "../shared_types" }
 sdl_input = { path = "../sdl_input" }

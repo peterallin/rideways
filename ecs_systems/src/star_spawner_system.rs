@@ -29,12 +29,12 @@ impl<'a> System<'a> for StarSpawner {
     ) {
         let arena_rect = arena.0;
         let mut rng = rand::thread_rng();
-        if rng.gen_range(0, 10000) > 9500 {
+        if rng.gen_range(0..10000) > 9500 {
             let x = arena_rect.right() - 1.0;
-            let y = rng.gen_range(arena_rect.top(), arena_rect.bottom());
+            let y = rng.gen_range(arena_rect.top()..arena_rect.bottom());
             let pos = (x, y).into();
-            let radius = rng.gen_range(1, 5);
-            let speed = rng.gen_range(15, 50);
+            let radius = rng.gen_range(1..5);
+            let speed = rng.gen_range(15..50);
             entities
                 .build_entity()
                 .with(

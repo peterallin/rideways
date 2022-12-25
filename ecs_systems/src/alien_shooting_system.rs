@@ -43,7 +43,7 @@ impl<'a> System<'a> for AlienShooting {
         use specs::Join;
         let mut fire_positions = vec![];
         for (pos, _) in (&position, &is_alien).join() {
-            if rng.gen_range(0, 10000) > 9900 {
+            if rng.gen_range(0..10000) > 9900 {
                 fire_positions.push(*pos);
             }
         }

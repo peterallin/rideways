@@ -6,9 +6,9 @@ edition = "2018"
 
 
 [dependencies]
-sdl2 = { version = "0.32", features = ["ttf","image","gfx","mixer"] }
-time = "0.1"
-specs = "0.15"
+sdl2 = { version = "0.35", features = ["ttf","image","gfx","mixer"] }
+time = "0.3"
+specs = "0.18"
 specs-derive = "0.4"
-rand = "0.7"
-rand_core="0.5"
+rand = "0.8"
+rand_core="0.6"

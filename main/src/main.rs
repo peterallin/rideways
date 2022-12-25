@@ -10,6 +10,7 @@ use ecs_components::{Draw, Invincibility, IsPlayer, KeepInside, Position, Sprite
 
 use sdl2::pixels::Color;
 use specs::{Builder, Dispatcher, ReadStorage, World, WorldExt};
+use time::Duration;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let window_size = (1200, 600);
@@ -26,9 +27,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut control_state = ControlState::new();
 
     let mut state = GameState::new();
-    let mut previous_time = time::precise_time_s();
+    let mut previous_time = time::OffsetDateTime::now_utc();
     loop {
-        let time = time::precise_time_s();
+        let time = time::OffsetDateTime::now_utc();
         let delta_time = time - previous_time;
         previous_time = time;
 
@@ -58,7 +59,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &mut graphics,
             )?,
             GameState::GameOver { seconds_left } => {
-                game_over(seconds_left, delta_time, &mut graphics)?
+                game_over(seconds_left, delta_time.as_seconds_f64(), &mut graphics)?
             }
         };
         graphics.present();
@@ -127,7 +128,7 @@ fn play(
     world: &mut World,
     dispatcher: &mut Dispatcher,
     control_state: ControlState,
-    delta_time: f64,
+    delta_time: Duration,
     graphics: &mut Graphics,
 ) -> Result<GameState, Box<dyn Error>> {
     let status_text = format!("Lives: {}   Score: {}", state.lives_left, state.score);
@@ -138,7 +139,7 @@ fn play(
         FontType::Info,
     )?;
     world.insert(control_state);
-    world.insert(ElapsedSeconds(delta_time as f32));
+    world.insert(ElapsedSeconds(delta_time.as_seconds_f32()));
     world.insert(state);
     world.maintain();
 

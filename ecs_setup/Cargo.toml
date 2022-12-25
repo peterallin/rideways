@@ -8,4 +8,4 @@ edition = "2018"
 ecs_components = { path = "../ecs_components" }
 ecs_systems = { path = "../ecs_systems" }
 shared_types = { path = "../shared_types" }
-specs = "0.15"
+specs = "0.18"
